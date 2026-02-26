@@ -47,8 +47,18 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
+import Feed from './pages/Feed';
+import Admin from './pages/Admin';
+import __Layout from './Layout.jsx';
 
-export const pagesConfig = {
-	Pages: {}
+
+export const PAGES = {
+    "Feed": Feed,
+    "Admin": Admin,
 }
 
+export const pagesConfig = {
+    mainPage: "Feed",
+    Pages: PAGES,
+    Layout: __Layout,
+};

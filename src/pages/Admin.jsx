@@ -1,0 +1,52 @@
+import React, { useState } from "react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { MessageSquare, Users, Zap } from "lucide-react";
+import SubjectManager from "../components/admin/SubjectManager";
+import PostManager from "../components/admin/PostManager";
+import UserManager from "../components/admin/UserManager";
+
+export default function Admin() {
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <div className="max-w-4xl mx-auto px-4 py-8 md:py-12">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Admin Panel</h1>
+          <p className="text-slate-500 mt-1">Manage subjects, posts, and users</p>
+        </div>
+
+        <Tabs defaultValue="subjects" className="space-y-6">
+          <TabsList className="bg-white border border-slate-200 rounded-xl p-1 h-auto">
+            <TabsTrigger
+              value="subjects"
+              className="rounded-lg gap-2 data-[state=active]:bg-slate-900 data-[state=active]:text-white px-4 py-2.5"
+            >
+              <Zap className="w-4 h-4" /> Subjects
+            </TabsTrigger>
+            <TabsTrigger
+              value="posts"
+              className="rounded-lg gap-2 data-[state=active]:bg-slate-900 data-[state=active]:text-white px-4 py-2.5"
+            >
+              <MessageSquare className="w-4 h-4" /> Posts
+            </TabsTrigger>
+            <TabsTrigger
+              value="users"
+              className="rounded-lg gap-2 data-[state=active]:bg-slate-900 data-[state=active]:text-white px-4 py-2.5"
+            >
+              <Users className="w-4 h-4" /> Users
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="subjects">
+            <SubjectManager />
+          </TabsContent>
+          <TabsContent value="posts">
+            <PostManager />
+          </TabsContent>
+          <TabsContent value="users">
+            <UserManager />
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+}
