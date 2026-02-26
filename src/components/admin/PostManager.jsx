@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Trash2, Search, Loader2, Image as ImageIcon } from "lucide-react";
+import { Trash2, Search, Loader2, Image as ImageIcon, FileSpreadsheet, ExternalLink, Lock } from "lucide-react";
 import { format } from "date-fns";
 
 export default function PostManager() {
