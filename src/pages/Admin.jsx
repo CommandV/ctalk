@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { MessageSquare, Users, Zap } from "lucide-react";
+import { MessageSquare, Users, Zap, CreditCard } from "lucide-react";
 import SubjectManager from "../components/admin/SubjectManager";
 import PostManager from "../components/admin/PostManager";
 import UserManager from "../components/admin/UserManager";
+import CardManager from "../components/admin/CardManager";
 
 export default function Admin() {
   return (
