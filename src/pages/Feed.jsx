@@ -6,7 +6,10 @@ import PostComposer from "../components/PostComposer";
 import PostCard from "../components/PostCard";
 import SubjectHeader from "../components/SubjectHeader";
 import CardReveal from "../components/CardReveal";
-import { Loader2 } from "lucide-react";
+import { Loader2, Trophy } from "lucide-react";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
+import { getBonusesForCount } from "../components/bonuses";
 
 export default function Feed() {
   const [userProfile, setUserProfile] = useState(null);
@@ -64,18 +67,43 @@ export default function Feed() {
     avatar_color: profileMap[p.username]?.avatar_color || "#6366F1",
   }));
 
-  const handlePostCreated = () => {
+  const { data: myCollection = [] } = useQuery({
+    queryKey: ["my-collection", userProfile?.username],
+    queryFn: () => base44.entities.UserCardCollection.filter({ username: userProfile.username }),
+    enabled: !!userProfile,
+  });
+
+  const uniqueCollectedCount = new Set(myCollection.map((c) => c.card_id)).size;
+  const currentTier = getBonusesForCount(uniqueCollectedCount);
+
+  // Legend status = master collector (7 unique cards)
+  const legendUsernames = new Set();
+
+  const handlePostCreated = async () => {
     queryClient.invalidateQueries({ queryKey: ["posts"] });
-    if (cards.length > 0) {
+    if (cards.length > 0 && userProfile) {
       const next = postsSinceLastCard + 1;
-      const threshold = Math.floor(Math.random() * 3) + 4; // random 4-6
+      const threshold = Math.floor(Math.random() * 3) + 4;
       if (next >= threshold) {
-        // Pick weighted random card (legendary less likely)
         const weights = { common: 40, uncommon: 25, rare: 20, epic: 10, legendary: 5 };
         const pool = cards.flatMap((c) => Array(weights[c.rarity] || 10).fill(c));
         const picked = pool[Math.floor(Math.random() * pool.length)];
         setRevealCard(picked);
         setPostsSinceLastCard(0);
+        // Save to collection
+        const existing = myCollection.find((c) => c.card_id === picked.id);
+        if (existing) {
+          await base44.entities.UserCardCollection.update(existing.id, { count: (existing.count || 1) + 1 });
+        } else {
+          await base44.entities.UserCardCollection.create({
+            username: userProfile.username,
+            card_id: picked.id,
+            character_name: picked.character_name,
+            rarity: picked.rarity,
+            count: 1,
+          });
+        }
+        queryClient.invalidateQueries({ queryKey: ["my-collection"] });
       } else {
         setPostsSinceLastCard(next);
       }
@@ -97,6 +125,18 @@ export default function Feed() {
   return (
     <div className="min-h-screen bg-gray-50 pb-28">
       <div className="max-w-2xl mx-auto px-4 py-6">
+        {/* Milestones banner */}
+        <Link to={createPageUrl("Milestones")} className="flex items-center justify-between bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-2xl px-4 py-3 mb-5 shadow hover:opacity-95 transition-opacity">
+          <div className="flex items-center gap-2.5">
+            <Trophy className="w-5 h-5 text-yellow-300" />
+            <div>
+              <p className="font-bold text-sm">{currentTier ? `${currentTier.emoji} ${currentTier.title}` : "Start collecting cards!"}</p>
+              <p className="text-white/70 text-xs">{uniqueCollectedCount} cards collected · View bonuses & Pokédex</p>
+            </div>
+          </div>
+          <span className="text-white/60 text-xs">→</span>
+        </Link>
+
         <SubjectHeader subject={activeSubject} postCount={enrichedPosts.length} />
 
         {activeSubject && (
@@ -111,9 +151,17 @@ export default function Feed() {
               </div>
             ) : (
               <div className="space-y-3">
-                {enrichedPosts.map((post, i) => (
-                  <PostCard key={post.id} post={post} index={i} />
-                ))}
+                {enrichedPosts.map((post, i) => {
+                  const authorCollection = allProfiles.find((p) => p.username === post.username);
+                  return (
+                    <PostCard
+                      key={post.id}
+                      post={post}
+                      index={i}
+                      currentUsername={userProfile.username}
+                    />
+                  );
+                })}
               </div>
             )}
           </>
