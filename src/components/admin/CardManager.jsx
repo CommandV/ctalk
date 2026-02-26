@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, Upload, Star, Pencil, Check, X, Trash2, Plus } from "lucide-react";
+import AdminCardGift from "./AdminCardGift";
 
 const RARITIES = ["common", "uncommon", "rare", "epic", "legendary"];
 const RARITY_COLORS = {
@@ -229,6 +230,7 @@ export default function CardManager() {
           </div>
         )}
       </div>
+      <AdminCardGift />
     </div>
   );
 }
