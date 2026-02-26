@@ -6,7 +6,9 @@ import PostComposer from "../components/PostComposer";
 import PostCard from "../components/PostCard";
 import SubjectHeader from "../components/SubjectHeader";
 import CardReveal from "../components/CardReveal";
-import { Loader2, Trophy } from "lucide-react";
+import GiftCardModal from "../components/GiftCardModal";
+import IncomingTrades from "../components/IncomingTrades";
+import { Loader2, Trophy, Gift } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { getBonusesForCount } from "../components/bonuses";
@@ -16,6 +18,7 @@ export default function Feed() {
   const [checkingProfile, setCheckingProfile] = useState(true);
   const [revealCard, setRevealCard] = useState(null);
   const [postsSinceLastCard, setPostsSinceLastCard] = useState(0);
+  const [showGiftModal, setShowGiftModal] = useState(false);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -126,16 +129,27 @@ export default function Feed() {
     <div className="min-h-screen bg-gray-50 pb-28">
       <div className="max-w-2xl mx-auto px-4 py-6">
         {/* Milestones banner */}
-        <Link to={createPageUrl("Milestones")} className="flex items-center justify-between bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-2xl px-4 py-3 mb-5 shadow hover:opacity-95 transition-opacity">
-          <div className="flex items-center gap-2.5">
-            <Trophy className="w-5 h-5 text-yellow-300" />
-            <div>
-              <p className="font-bold text-sm">{currentTier ? `${currentTier.emoji} ${currentTier.title}` : "Start collecting cards!"}</p>
-              <p className="text-white/70 text-xs">{uniqueCollectedCount} cards collected · View bonuses & Pokédex</p>
+        <div className="flex gap-2 mb-5">
+          <Link to={createPageUrl("Milestones")} className="flex-1 flex items-center justify-between bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-2xl px-4 py-3 shadow hover:opacity-95 transition-opacity">
+            <div className="flex items-center gap-2.5">
+              <Trophy className="w-5 h-5 text-yellow-300" />
+              <div>
+                <p className="font-bold text-sm">{currentTier ? `${currentTier.emoji} ${currentTier.title}` : "Start collecting cards!"}</p>
+                <p className="text-white/70 text-xs">{uniqueCollectedCount} cards · View bonuses & Pokédex</p>
+              </div>
             </div>
-          </div>
-          <span className="text-white/60 text-xs">→</span>
-        </Link>
+            <span className="text-white/60 text-xs">→</span>
+          </Link>
+          <button
+            onClick={() => setShowGiftModal(true)}
+            className="bg-white border-2 border-violet-200 text-violet-600 rounded-2xl px-4 flex flex-col items-center justify-center gap-1 hover:bg-violet-50 transition-colors shadow-sm"
+          >
+            <Gift className="w-5 h-5" />
+            <span className="text-[10px] font-bold">Gift</span>
+          </button>
+        </div>
+
+        <IncomingTrades username={userProfile.username} />
 
         <SubjectHeader subject={activeSubject} postCount={enrichedPosts.length} />
 
@@ -169,9 +183,11 @@ export default function Feed() {
       </div>
 
       {revealCard && <CardReveal card={revealCard} onClose={() => setRevealCard(null)} />}
+      {showGiftModal && <GiftCardModal userProfile={userProfile} onClose={() => setShowGiftModal(false)} />}
 
       {activeSubject && (
         <div className="fixed bottom-0 left-0 right-0 z-40">
+
           <PostComposer
             userProfile={userProfile}
             activeSubject={activeSubject}
