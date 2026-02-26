@@ -35,6 +35,12 @@ export default function Admin() {
             >
               <Users className="w-4 h-4" /> Users
             </TabsTrigger>
+            <TabsTrigger
+              value="cards"
+              className="rounded-lg gap-2 data-[state=active]:bg-slate-900 data-[state=active]:text-white px-4 py-2.5"
+            >
+              <CreditCard className="w-4 h-4" /> Cards
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="subjects">
@@ -45,6 +51,9 @@ export default function Admin() {
           </TabsContent>
           <TabsContent value="users">
             <UserManager />
+          </TabsContent>
+          <TabsContent value="cards">
+            <CardManager />
           </TabsContent>
         </Tabs>
       </div>
