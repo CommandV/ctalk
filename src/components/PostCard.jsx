@@ -1,8 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
+import PostReactions from "./PostReactions";
 
-export default function PostCard({ post, index = 0 }) {
+export default function PostCard({ post, index = 0, currentUsername, isLegend = false }) {
   const initial = post.username ? post.username[0].toUpperCase() : "?";
 
   return (
@@ -10,7 +11,7 @@ export default function PostCard({ post, index = 0 }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.04 }}
-      className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow duration-200"
+      className={`bg-white rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow duration-200 border-2 ${isLegend ? "border-yellow-400 shadow-yellow-200/50" : "border-gray-100"}`}
     >
       <div className="flex items-start gap-3.5">
         <div
@@ -40,6 +41,7 @@ export default function PostCard({ post, index = 0 }) {
               />
             </div>
           )}
+          <PostReactions post={post} currentUsername={currentUsername} />
         </div>
       </div>
     </motion.div>
