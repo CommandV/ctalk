@@ -49,7 +49,43 @@ export default function PostManager() {
   return (
     <div className="space-y-4">
       <div className="bg-white rounded-2xl border border-slate-200 p-6">
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">Manage Posts</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-slate-900">Manage Posts</h3>
+          <Button
+            onClick={handleExport}
+            disabled={exporting}
+            className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl gap-2 text-sm"
+          >
+            {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileSpreadsheet className="w-4 h-4" />}
+            Export to Sheets
+          </Button>
+        </div>
+
+        {exportResult && (
+          <div className={`mb-4 p-4 rounded-xl border text-sm ${exportResult.success ? "bg-emerald-50 border-emerald-200" : "bg-red-50 border-red-200"}`}>
+            {exportResult.success ? (
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 font-semibold text-emerald-800">
+                  <Lock className="w-4 h-4" />
+                  Export successful — AES-256-CBC encrypted
+                </div>
+                <p className="text-emerald-700 text-xs">
+                  {exportResult.totalPosts} posts from {exportResult.totalUsers} users exported. The decryption key is stored in a separate sheet.
+                </p>
+                <a
+                  href={exportResult.spreadsheetUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 mt-2 text-emerald-700 font-medium hover:underline"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" /> Open Spreadsheet
+                </a>
+              </div>
+            ) : (
+              <p className="text-red-700">{exportResult.error}</p>
+            )}
+          </div>
+        )}
 
         <div className="flex flex-col sm:flex-row gap-3 mb-4">
           <div className="relative flex-1">
