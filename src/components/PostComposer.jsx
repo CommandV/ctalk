@@ -50,65 +50,68 @@ export default function PostComposer({ userProfile, activeSubject, onPostCreated
   };
 
   return (
-    <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-4">
-      <div className="flex items-start gap-3">
-        <div
-          className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0"
-          style={{ backgroundColor: userProfile.avatar_color || "#6366F1" }}
-        >
-          {userProfile.username[0].toUpperCase()}
-        </div>
-        <div className="flex-1">
-          <Textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Share your thoughts..."
-            className="bg-transparent border-0 text-white placeholder:text-slate-600 resize-none text-[15px] p-0 focus-visible:ring-0 min-h-[60px]"
-            rows={2}
-          />
-
-          <AnimatePresence>
-            {imagePreview && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="relative mt-3 rounded-xl overflow-hidden inline-block"
-              >
-                <img src={imagePreview} alt="Preview" className="max-h-48 rounded-xl" />
+    <div className="bg-white border-t border-gray-200 px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+      <div className="max-w-2xl mx-auto">
+        <AnimatePresence>
+          {imagePreview && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mb-2"
+            >
+              <div className="relative inline-block">
+                <img src={imagePreview} alt="Preview" className="max-h-32 rounded-xl border border-gray-200" />
                 <button
                   onClick={removeImage}
-                  className="absolute top-2 right-2 bg-black/60 rounded-full p-1 hover:bg-black/80 transition-colors"
+                  className="absolute top-1.5 right-1.5 bg-gray-900/60 rounded-full p-1 hover:bg-gray-900/80 transition-colors"
                 >
-                  <X className="w-4 h-4 text-white" />
+                  <X className="w-3 h-3 text-white" />
                 </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-          <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/[0.06]">
+        <div className="flex items-end gap-3">
+          <div
+            className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-xs shrink-0"
+            style={{ backgroundColor: userProfile.avatar_color || "#6366F1" }}
+          >
+            {userProfile.username[0].toUpperCase()}
+          </div>
+
+          <div className="flex-1 flex items-end gap-2 bg-gray-100 rounded-2xl px-4 py-2.5">
+            <Textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="Share your thoughts..."
+              className="bg-transparent border-0 text-gray-800 placeholder:text-gray-400 resize-none text-sm p-0 focus-visible:ring-0 min-h-[24px] max-h-32 leading-relaxed"
+              rows={1}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSubmit();
+                }
+              }}
+            />
             <button
               onClick={() => fileRef.current?.click()}
-              className="text-slate-500 hover:text-amber-400 transition-colors p-2 rounded-lg hover:bg-white/[0.05]"
+              className="text-gray-400 hover:text-violet-500 transition-colors shrink-0 pb-0.5"
             >
               <ImagePlus className="w-5 h-5" />
             </button>
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/*"
-              onChange={handleImageSelect}
-              className="hidden"
-            />
-            <Button
-              onClick={handleSubmit}
-              disabled={posting || (!content.trim() && !imageFile)}
-              className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold rounded-xl px-5 h-9 text-sm gap-2"
-            >
-              {posting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-              Post
-            </Button>
           </div>
+
+          <input ref={fileRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
+
+          <Button
+            onClick={handleSubmit}
+            disabled={posting || (!content.trim() && !imageFile)}
+            className="bg-violet-600 hover:bg-violet-500 text-white rounded-full w-10 h-10 p-0 shrink-0 flex items-center justify-center"
+          >
+            {posting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+          </Button>
         </div>
       </div>
     </div>

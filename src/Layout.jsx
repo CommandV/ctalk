@@ -1,30 +1,30 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Shield, MessageSquare } from "lucide-react";
+import { Shield, PenSquare } from "lucide-react";
 
 export default function Layout({ children, currentPageName }) {
   const isAdmin = currentPageName === "Admin";
 
   return (
-    <div className="min-h-screen">
-      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-slate-950/80 border-b border-white/[0.06]">
-        <div className="max-w-4xl mx-auto px-4 flex items-center justify-between h-14">
+    <div className="min-h-screen bg-gray-50">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+        <div className="max-w-2xl mx-auto px-4 flex items-center justify-between h-14">
           <Link
             to={createPageUrl("Feed")}
-            className="flex items-center gap-2 text-white font-semibold tracking-tight hover:opacity-80 transition-opacity"
+            className="flex items-center gap-2 font-bold text-gray-900 tracking-tight hover:opacity-75 transition-opacity"
           >
-            <div className="w-7 h-7 rounded-lg bg-amber-500 flex items-center justify-center">
-              <MessageSquare className="w-4 h-4 text-slate-950" />
+            <div className="w-8 h-8 rounded-xl bg-violet-600 flex items-center justify-center">
+              <PenSquare className="w-4 h-4 text-white" />
             </div>
-            <span className="text-sm">Thoughts</span>
+            <span className="text-base">Thoughts</span>
           </Link>
           <Link
             to={createPageUrl("Admin")}
-            className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors ${
+            className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors ${
               isAdmin
-                ? "bg-white/10 text-white"
-                : "text-slate-500 hover:text-slate-300 hover:bg-white/[0.05]"
+                ? "bg-gray-100 border-gray-300 text-gray-800"
+                : "border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700"
             }`}
           >
             <Shield className="w-3.5 h-3.5" />
