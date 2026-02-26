@@ -5,11 +5,14 @@ import UsernameGate from "../components/UsernameGate";
 import PostComposer from "../components/PostComposer";
 import PostCard from "../components/PostCard";
 import SubjectHeader from "../components/SubjectHeader";
+import CardReveal from "../components/CardReveal";
 import { Loader2 } from "lucide-react";
 
 export default function Feed() {
   const [userProfile, setUserProfile] = useState(null);
   const [checkingProfile, setCheckingProfile] = useState(true);
+  const [revealCard, setRevealCard] = useState(null);
+  const [postsSinceLastCard, setPostsSinceLastCard] = useState(0);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -23,6 +26,11 @@ export default function Feed() {
     };
     checkProfile();
   }, []);
+
+  const { data: cards = [] } = useQuery({
+    queryKey: ["trading-cards"],
+    queryFn: () => base44.entities.TradingCard.list(),
+  });
 
   const { data: subjects = [] } = useQuery({
     queryKey: ["subjects"],
@@ -58,6 +66,20 @@ export default function Feed() {
 
   const handlePostCreated = () => {
     queryClient.invalidateQueries({ queryKey: ["posts"] });
+    if (cards.length > 0) {
+      const next = postsSinceLastCard + 1;
+      const threshold = Math.floor(Math.random() * 3) + 4; // random 4-6
+      if (next >= threshold) {
+        // Pick weighted random card (legendary less likely)
+        const weights = { common: 40, uncommon: 25, rare: 20, epic: 10, legendary: 5 };
+        const pool = cards.flatMap((c) => Array(weights[c.rarity] || 10).fill(c));
+        const picked = pool[Math.floor(Math.random() * pool.length)];
+        setRevealCard(picked);
+        setPostsSinceLastCard(0);
+      } else {
+        setPostsSinceLastCard(next);
+      }
+    }
   };
 
   if (checkingProfile) {
