@@ -62,8 +62,8 @@ export default function Feed() {
 
   if (checkingProfile) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-violet-500 animate-spin" />
       </div>
     );
   }
@@ -73,25 +73,19 @@ export default function Feed() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900">
-      <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
+    <div className="min-h-screen bg-gray-50 pb-28">
+      <div className="max-w-2xl mx-auto px-4 py-6">
         <SubjectHeader subject={activeSubject} postCount={enrichedPosts.length} />
 
         {activeSubject && (
-          <div className="space-y-5">
-            <PostComposer
-              userProfile={userProfile}
-              activeSubject={activeSubject}
-              onPostCreated={handlePostCreated}
-            />
-
+          <>
             {postsLoading ? (
               <div className="flex justify-center py-12">
-                <Loader2 className="w-6 h-6 text-slate-600 animate-spin" />
+                <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />
               </div>
             ) : enrichedPosts.length === 0 ? (
               <div className="text-center py-16">
-                <p className="text-slate-600 text-lg">Be the first to share your thoughts</p>
+                <p className="text-gray-400 text-base">Be the first to share your thoughts ✍️</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -100,9 +94,19 @@ export default function Feed() {
                 ))}
               </div>
             )}
-          </div>
+          </>
         )}
       </div>
+
+      {activeSubject && (
+        <div className="fixed bottom-0 left-0 right-0 z-40">
+          <PostComposer
+            userProfile={userProfile}
+            activeSubject={activeSubject}
+            onPostCreated={handlePostCreated}
+          />
+        </div>
+      )}
     </div>
   );
 }
