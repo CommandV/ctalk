@@ -10,7 +10,17 @@ import { format } from "date-fns";
 export default function PostManager() {
   const [search, setSearch] = useState("");
   const [subjectFilter, setSubjectFilter] = useState("all");
+  const [exporting, setExporting] = useState(false);
+  const [exportResult, setExportResult] = useState(null);
   const queryClient = useQueryClient();
+
+  const handleExport = async () => {
+    setExporting(true);
+    setExportResult(null);
+    const response = await base44.functions.invoke("exportToSheets");
+    setExportResult(response.data);
+    setExporting(false);
+  };
 
   const { data: posts = [], isLoading } = useQuery({
     queryKey: ["admin-posts"],
