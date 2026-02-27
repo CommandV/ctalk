@@ -124,6 +124,9 @@ export default function Feed() {
   const uniqueCollectedCount = useMemo(() => new Set(myCollection.map((c) => c.card_id)).size, [myCollection]);
   const currentTier = useMemo(() => getBonusesForCount(uniqueCollectedCount), [uniqueCollectedCount]);
 
+  // Newest posts first (displayed bottom to top for chat layout)
+  const sortedPosts = useMemo(() => enrichedPosts, [enrichedPosts]);
+
   // Record user info on first load (IP, geo, etc.)
   useEffect(() => {
     if (userProfile) {
@@ -207,9 +210,6 @@ export default function Feed() {
       queryClient.invalidateQueries({ queryKey: ["incoming-trades"] }),
     ]);
   };
-
-  // Newest posts first (displayed bottom to top for chat layout)
-  const sortedPosts = useMemo(() => enrichedPosts, [enrichedPosts]);
 
   return (
     <PullToRefresh onRefresh={handleRefresh}>
