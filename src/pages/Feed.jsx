@@ -9,7 +9,8 @@ import CardReveal from "../components/CardReveal";
 import CardRevealUltra from "../components/CardRevealUltra";
 import GiftCardModal from "../components/GiftCardModal";
 import IncomingTrades from "../components/IncomingTrades";
-import { Loader2, Trophy, Gift } from "lucide-react";
+import CardPackOpener from "../components/CardPackOpener";
+import { Loader2, Trophy, Gift, Package } from "lucide-react";
 import OnlineCounter from "../components/OnlineCounter";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -22,6 +23,7 @@ export default function Feed() {
   const [ultraRevealCard, setUltraRevealCard] = useState(null);
   const [postsSinceLastCard, setPostsSinceLastCard] = useState(0);
   const [showGiftModal, setShowGiftModal] = useState(false);
+  const [showPackOpener, setShowPackOpener] = useState(false);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -174,6 +176,13 @@ export default function Feed() {
             <Gift className="w-5 h-5" />
             <span className="text-[10px] font-bold">Gift</span>
           </button>
+          <button
+            onClick={() => setShowPackOpener(true)}
+            className="bg-white border-2 border-amber-200 text-amber-600 rounded-2xl px-4 flex flex-col items-center justify-center gap-1 hover:bg-amber-50 transition-colors shadow-sm"
+          >
+            <Package className="w-5 h-5" />
+            <span className="text-[10px] font-bold">Packs</span>
+          </button>
         </div>
 
         <IncomingTrades username={userProfile.username} onUltraReveal={setUltraRevealCard} />
@@ -215,6 +224,7 @@ export default function Feed() {
       {revealCard && <CardReveal card={revealCard} onClose={() => setRevealCard(null)} />}
       {ultraRevealCard && <CardRevealUltra card={ultraRevealCard} onClose={() => setUltraRevealCard(null)} />}
       {showGiftModal && <GiftCardModal userProfile={userProfile} onClose={() => setShowGiftModal(false)} />}
+      {showPackOpener && <CardPackOpener username={userProfile.username} onClose={() => setShowPackOpener(false)} />}
 
       {activeSubject && (
         <div className="fixed bottom-0 left-0 right-0 z-40">
