@@ -176,7 +176,7 @@ export default function Feed() {
           </button>
         </div>
 
-        <IncomingTrades username={userProfile.username} />
+        <IncomingTrades username={userProfile.username} onUltraReveal={setUltraRevealCard} />
 
         <div className="flex items-center justify-between mb-1">
           <OnlineCounter username={userProfile?.username} />
