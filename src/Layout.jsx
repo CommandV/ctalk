@@ -32,23 +32,6 @@ export default function Layout({ children, currentPageName }) {
   }, []);
 
   useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        originalTitle.current = document.title;
-        document.title = CLOAKED_TITLE;
-        const favicon = document.querySelector("link[rel='icon']");
-        if (favicon) favicon.href = CLOAKED_FAVICON;
-      } else {
-        document.title = originalTitle.current;
-        const favicon = document.querySelector("link[rel='icon']");
-        if (favicon) favicon.href = "/favicon.ico";
-      }
-    };
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
-  }, []);
-
-  useEffect(() => {
     if (prevPage.current !== currentPageName) {
       setDirection(getSlideDirection(prevPage.current, currentPageName));
       prevPage.current = currentPageName;
