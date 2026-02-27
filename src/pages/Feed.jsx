@@ -19,6 +19,7 @@ export default function Feed() {
   const [userProfile, setUserProfile] = useState(null);
   const [checkingProfile, setCheckingProfile] = useState(true);
   const [revealCard, setRevealCard] = useState(null);
+  const [ultraRevealCard, setUltraRevealCard] = useState(null);
   const [postsSinceLastCard, setPostsSinceLastCard] = useState(0);
   const [showGiftModal, setShowGiftModal] = useState(false);
   const queryClient = useQueryClient();
