@@ -31,6 +31,7 @@ export const BONUS_TIERS = [
       { label: "Reaction Power", value: "2x", detail: "Your reactions count double" },
       { label: "Card Drop Rate", value: "+20%", detail: "Cards drop more frequently" },
       { label: "Score Multiplier", value: "1.2x", detail: "All your scores boosted" },
+      { label: "Post Spam Bonus", value: "Active", detail: "Post 5x in a session for a card bonus" },
     ],
   },
   {
@@ -44,6 +45,7 @@ export const BONUS_TIERS = [
       { label: "Card Drop Rate", value: "+30%", detail: "Notable drop rate increase" },
       { label: "Score Multiplier", value: "1.35x", detail: "Boosted score across the board" },
       { label: "Rare Luck", value: "+5%", detail: "Slightly better chance at rare cards" },
+      { label: "Reaction Spam Bonus", value: "Active", detail: "React 10x per session for bonus XP" },
     ],
   },
   {
@@ -57,6 +59,7 @@ export const BONUS_TIERS = [
       { label: "Card Drop Rate", value: "+40%", detail: "Frequent card drops" },
       { label: "Score Multiplier", value: "1.5x", detail: "Major score boost" },
       { label: "Rare Luck", value: "+10%", detail: "Better chance at rare+ cards" },
+      { label: "Image Spam Bonus", value: "Active", detail: "Post 3 images for a bonus card drop" },
     ],
   },
   {
@@ -71,6 +74,7 @@ export const BONUS_TIERS = [
       { label: "Score Multiplier", value: "1.75x", detail: "Massive score boost" },
       { label: "Rare Luck", value: "+20%", detail: "Strong bias toward rare+ cards" },
       { label: "Legend Status", value: "Active", detail: "Gold border on your posts" },
+      { label: "Meme Access", value: "Unlocked", detail: "Post from the admin meme library" },
     ],
   },
   {
@@ -86,6 +90,8 @@ export const BONUS_TIERS = [
       { label: "Rare Luck", value: "+35%", detail: "Heavily skewed toward epic & legendary" },
       { label: "Legend Status", value: "Active", detail: "Rainbow border on all posts" },
       { label: "Exclusive Title", value: "Living Legend", detail: "Unique display title in feed" },
+      { label: "Meme Access", value: "Unlocked", detail: "Post from the admin meme library" },
+      { label: "Spam Amplifier", value: "2x", detail: "All spam bonuses count double" },
     ],
   },
 ];
