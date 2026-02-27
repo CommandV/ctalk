@@ -98,12 +98,22 @@ export default function PostComposer({ userProfile, activeSubject, onPostCreated
                 }
               }}
             />
-            <button
-              onClick={() => fileRef.current?.click()}
-              className="text-gray-400 hover:text-violet-500 transition-colors shrink-0 pb-0.5"
-            >
-              <ImagePlus className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-1 shrink-0">
+              <button
+                onClick={() => fileRef.current?.click()}
+                className="text-gray-400 hover:text-violet-500 transition-colors pb-0.5"
+              >
+                <ImagePlus className="w-5 h-5" />
+              </button>
+              {memeAllowed && (
+                <MemePicker
+                  onSelect={(url) => {
+                    setImageFile(null);
+                    setImagePreview(url);
+                  }}
+                />
+              )}
+            </div>
           </div>
 
           <input ref={fileRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
