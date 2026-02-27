@@ -39,12 +39,7 @@ export default function UsernameGate({ onComplete }) {
     await base44.entities.UserProfile.create({ username: trimmed, avatar_color: color });
     
     // Open cloaked tab
-    const cloakedWindow = window.open("about:blank", "_blank");
-    if (cloakedWindow) {
-      cloakedWindow.document.title = "Google";
-      const faviconHtml = `<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='20' fill='%234285F4'>G</text></svg>">`;
-      cloakedWindow.document.head.innerHTML = faviconHtml;
-    }
+    window.open("https://www.google.com", "_blank");
     
     onComplete({ username: trimmed, avatar_color: color });
     setLoading(false);
