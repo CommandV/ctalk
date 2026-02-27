@@ -72,6 +72,7 @@ export default function Feed() {
   const { data: subjects = [] } = useQuery({
     queryKey: ["subjects"],
     queryFn: () => base44.entities.Subject.filter({ is_active: true }),
+    staleTime: 60000,
   });
 
   const activeSubject = subjects[0] || null;
