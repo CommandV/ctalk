@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { MessageSquare, Users, Zap, CreditCard } from "lucide-react";
+import { MessageSquare, Users, Zap, CreditCard, RotateCcw } from "lucide-react";
 import SubjectManager from "../components/admin/SubjectManager";
 import PostManager from "../components/admin/PostManager";
 import UserManager from "../components/admin/UserManager";
 import CardManager from "../components/admin/CardManager";
+import CycleManager from "../components/admin/CycleManager";
 
 export default function Admin() {
   return (
@@ -16,7 +17,7 @@ export default function Admin() {
         </div>
 
         <Tabs defaultValue="subjects" className="space-y-6">
-          <TabsList className="bg-white border border-slate-200 rounded-xl p-1 h-auto">
+          <TabsList className="bg-white border border-slate-200 rounded-xl p-1 h-auto flex-wrap gap-1">
             <TabsTrigger
               value="subjects"
               className="rounded-lg gap-2 data-[state=active]:bg-slate-900 data-[state=active]:text-white px-4 py-2.5"
@@ -41,6 +42,12 @@ export default function Admin() {
             >
               <CreditCard className="w-4 h-4" /> Cards
             </TabsTrigger>
+            <TabsTrigger
+              value="cycles"
+              className="rounded-lg gap-2 data-[state=active]:bg-slate-900 data-[state=active]:text-white px-4 py-2.5"
+            >
+              <RotateCcw className="w-4 h-4" /> Cycles
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="subjects">
@@ -54,6 +61,9 @@ export default function Admin() {
           </TabsContent>
           <TabsContent value="cards">
             <CardManager />
+          </TabsContent>
+          <TabsContent value="cycles">
+            <CycleManager />
           </TabsContent>
         </Tabs>
       </div>
