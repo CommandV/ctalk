@@ -11,7 +11,7 @@ export default function PostReactions({ post, currentUsername }) {
   const { data: reactions = [] } = useQuery({
     queryKey: ["reactions", post.id],
     queryFn: () => base44.entities.PostReaction.filter({ post_id: post.id }),
-    staleTime: 10000,
+    staleTime: 30000,
   });
 
   const boosts = reactions.filter((r) => r.reaction_type === "boost").length;
