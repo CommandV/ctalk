@@ -26,7 +26,7 @@ export default function Feed() {
       try {
         const user = await base44.auth.me();
         if (!user) {
-          setCheckingProfile(false);
+          base44.auth.redirectToLogin();
           return;
         }
         const profiles = await base44.entities.UserProfile.filter({ created_by: user.email });
@@ -34,7 +34,9 @@ export default function Feed() {
           setUserProfile(profiles[0]);
         }
       } catch (e) {
-        // not logged in or error - proceed to username gate
+        // Not authenticated — redirect to login
+        base44.auth.redirectToLogin();
+        return;
       } finally {
         setCheckingProfile(false);
       }

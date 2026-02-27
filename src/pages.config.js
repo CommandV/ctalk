@@ -49,16 +49,16 @@
  */
 import Admin from './pages/Admin';
 import Feed from './pages/Feed';
-import Milestones from './pages/Milestones';
 import Leaderboard from './pages/Leaderboard';
+import Milestones from './pages/Milestones';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "Admin": Admin,
     "Feed": Feed,
-    "Milestones": Milestones,
     "Leaderboard": Leaderboard,
+    "Milestones": Milestones,
 }
 
 export const pagesConfig = {
