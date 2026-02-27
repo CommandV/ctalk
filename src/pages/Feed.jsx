@@ -9,6 +9,7 @@ import CardReveal from "../components/CardReveal";
 import GiftCardModal from "../components/GiftCardModal";
 import IncomingTrades from "../components/IncomingTrades";
 import { Loader2, Trophy, Gift } from "lucide-react";
+import OnlineCounter from "../components/OnlineCounter";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { getBonusesForCount } from "../components/bonuses";
