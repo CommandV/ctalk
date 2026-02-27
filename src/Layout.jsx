@@ -164,6 +164,16 @@ export default function Layout({ children, currentPageName }) {
                 </div>
                 <div className="space-y-2">
                   <button
+                    onClick={() => {
+                      setShowSettings(false);
+                      window.dispatchEvent(new CustomEvent("open-change-username"));
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-sm font-medium"
+                  >
+                    <AtSign className="w-5 h-5 text-gray-500" />
+                    Change Username
+                  </button>
+                  <button
                     onClick={() => { base44.auth.logout(); }}
                     className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-sm font-medium"
                   >
