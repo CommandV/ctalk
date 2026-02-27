@@ -7,12 +7,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import MemePicker from "./MemePicker";
 import { canPostMemes } from "./bonuses";
 
-export default function PostComposer({ userProfile, activeSubject, onPostCreated }) {
+export default function PostComposer({ userProfile, activeSubject, onPostCreated, uniqueCardCount = 0 }) {
   const [content, setContent] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [posting, setPosting] = useState(false);
   const fileRef = useRef();
+  const memeAllowed = canPostMemes(uniqueCardCount);
 
   const handleImageSelect = (e) => {
     const file = e.target.files?.[0];
