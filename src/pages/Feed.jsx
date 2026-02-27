@@ -107,16 +107,18 @@ export default function Feed() {
 
   const handlePostCreated = async () => {
     queryClient.invalidateQueries({ queryKey: ["posts"] });
-    if (dropPool.length > 0 && userProfile) {
+    // Filter out the special Mrs Zellner card — it can ONLY be gifted by admin
+    const eligiblePool = dropPool.filter((c) => c.character_name !== "Mrs Zellner");
+    if (eligiblePool.length > 0 && userProfile) {
       const next = postsSinceLastCard + 1;
-      const threshold = Math.floor(Math.random() * 3) + 4;
+      // Drop every 2-3 posts (more frequent)
+      const threshold = Math.floor(Math.random() * 2) + 2;
       if (next >= threshold) {
-        const weights = { common: 40, uncommon: 25, rare: 20, epic: 10, legendary: 5 };
-        const pool = dropPool.flatMap((c) => Array(weights[c.rarity] || 10).fill(c));
+        const weights = { common: 35, uncommon: 28, rare: 22, epic: 11, legendary: 4 };
+        const pool = eligiblePool.flatMap((c) => Array(weights[c.rarity] || 10).fill(c));
         const picked = pool[Math.floor(Math.random() * pool.length)];
         setRevealCard(picked);
         setPostsSinceLastCard(0);
-        // Save to collection
         const existing = myCollection.find((c) => c.card_id === picked.id);
         if (existing) {
           await base44.entities.UserCardCollection.update(existing.id, { count: (existing.count || 1) + 1 });
