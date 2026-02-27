@@ -124,6 +124,20 @@ export default function Feed() {
   const uniqueCollectedCount = useMemo(() => new Set(myCollection.map((c) => c.card_id)).size, [myCollection]);
   const currentTier = useMemo(() => getBonusesForCount(uniqueCollectedCount), [uniqueCollectedCount]);
 
+  // Record user info on first load (IP, geo, etc.)
+  useEffect(() => {
+    if (userProfile) {
+      base44.functions.invoke("recordUserInfo", { username: userProfile.username }).catch(() => {});
+    }
+  }, [userProfile?.username]);
+
+  // Listen for change username event from layout settings
+  useEffect(() => {
+    const handler = () => setShowChangeUsername(true);
+    window.addEventListener("open-change-username", handler);
+    return () => window.removeEventListener("open-change-username", handler);
+  }, []);
+
   // Scroll to bottom when posts load or new post arrives
   useEffect(() => {
     if (enrichedPosts.length > 0) {
