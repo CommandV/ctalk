@@ -165,8 +165,17 @@ export default function Feed() {
     return <UsernameGate onComplete={setUserProfile} />;
   }
 
+  const handleRefresh = async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["posts"] }),
+      queryClient.invalidateQueries({ queryKey: ["my-collection"] }),
+      queryClient.invalidateQueries({ queryKey: ["incoming-trades"] }),
+    ]);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 pb-28">
+    <PullToRefresh onRefresh={handleRefresh}>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pb-4">
       <div className="max-w-2xl mx-auto px-4 py-6">
         {/* Milestones banner */}
         <div className="flex gap-2 mb-5">
@@ -238,7 +247,7 @@ export default function Feed() {
       {showPackOpener && <CardPackOpener username={userProfile.username} onClose={() => setShowPackOpener(false)} />}
 
       {activeSubject && (
-        <div className="fixed bottom-0 left-0 right-0 z-40">
+        <div className="fixed bottom-0 left-0 right-0 z-40" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
           <PostComposer
             userProfile={userProfile}
             activeSubject={activeSubject}
@@ -248,5 +257,6 @@ export default function Feed() {
         </div>
       )}
     </div>
+    </PullToRefresh>
   );
 }
