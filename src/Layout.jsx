@@ -5,6 +5,9 @@ import { Shield, PenSquare, Trophy, BarChart2, Settings, Trash2, X, LogOut, AtSi
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
 
+const CLOAKED_TITLE = "Google";
+const CLOAKED_FAVICON = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='20' fill='%234285F4'>G</text></svg>";
+
 const TAB_ORDER = ["Feed", "Leaderboard", "Milestones", "Admin"];
 
 function getSlideDirection(from, to) {
