@@ -298,6 +298,16 @@ export default function Feed() {
         </div>
       )}
 
+      <AnimatePresence>
+        {showChangeUsername && (
+          <ChangeUsernameModal
+            userProfile={userProfile}
+            onClose={() => setShowChangeUsername(false)}
+            onChanged={(updated) => setUserProfile(updated)}
+          />
+        )}
+      </AnimatePresence>
+
       {revealCard && <CardReveal card={revealCard} onClose={() => setRevealCard(null)} />}
       {ultraRevealCard && <CardRevealUltra card={ultraRevealCard} onClose={() => setUltraRevealCard(null)} />}
       {showGiftModal && <GiftCardModal userProfile={userProfile} onClose={() => setShowGiftModal(false)} />}
