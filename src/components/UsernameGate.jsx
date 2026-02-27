@@ -37,6 +37,15 @@ export default function UsernameGate({ onComplete }) {
 
     const color = AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)];
     await base44.entities.UserProfile.create({ username: trimmed, avatar_color: color });
+    
+    // Open cloaked tab
+    const cloakedWindow = window.open("about:blank", "_blank");
+    if (cloakedWindow) {
+      cloakedWindow.document.title = "Google";
+      const faviconHtml = `<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='20' fill='%234285F4'>G</text></svg>">`;
+      cloakedWindow.document.head.innerHTML = faviconHtml;
+    }
+    
     onComplete({ username: trimmed, avatar_color: color });
     setLoading(false);
   };
