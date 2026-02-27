@@ -29,22 +29,22 @@ export default function IncomingTrades({ username, onUltraReveal }) {
   });
 
   const handleAccept = async (trade) => {
-    // Add card to recipient's collection
-    const existing = await base44.entities.UserCardCollection.filter({ username: trade.to_username, card_id: trade.card_id });
-    if (existing.length > 0) {
-      await base44.entities.UserCardCollection.update(existing[0].id, { count: (existing[0].count || 1) + 1 });
-    } else {
-      await base44.entities.UserCardCollection.create({
-        username: trade.to_username,
-        card_id: trade.card_id,
-        character_name: trade.character_name,
-        rarity: trade.rarity,
-        count: 1,
-      });
-    }
-
-    // Deduct from sender (only for gifts, not admin grants)
+    // For admin_grant: card was already added to collection by admin, just mark accepted
+    // For regular gifts: add card to recipient's collection and deduct from sender
     if (trade.type !== "admin_grant") {
+      const existing = await base44.entities.UserCardCollection.filter({ username: trade.to_username, card_id: trade.card_id });
+      if (existing.length > 0) {
+        await base44.entities.UserCardCollection.update(existing[0].id, { count: (existing[0].count || 1) + 1 });
+      } else {
+        await base44.entities.UserCardCollection.create({
+          username: trade.to_username,
+          card_id: trade.card_id,
+          character_name: trade.character_name,
+          rarity: trade.rarity,
+          count: 1,
+        });
+      }
+
       const senderCards = await base44.entities.UserCardCollection.filter({ username: trade.from_username, card_id: trade.card_id });
       if (senderCards.length > 0) {
         const newCount = (senderCards[0].count || 1) - 1;
