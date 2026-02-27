@@ -61,14 +61,14 @@ export default function AdminCardGift() {
       });
     }
 
-    // Create a trade notification record so they see it
+    // Create a trade notification record so they see it (pending so user gets the animation)
     await base44.entities.CardTrade.create({
       from_username: "Admin",
       to_username: user.username,
       card_id: card.id,
       character_name: card.character_name,
       rarity: card.rarity,
-      status: "accepted",
+      status: "pending",
       type: "admin_grant",
       message: `A gift from the Admin! 👑 (×${quantity})`,
     });
