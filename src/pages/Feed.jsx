@@ -185,7 +185,7 @@ export default function Feed() {
   };
 
   // Sorted oldest-first for chat layout
-  const sortedPosts = [...enrichedPosts].reverse();
+  const sortedPosts = useMemo(() => [...enrichedPosts].reverse(), [enrichedPosts]);
 
   return (
     <PullToRefresh onRefresh={handleRefresh}>
