@@ -49,6 +49,12 @@ export default function Admin() {
             >
               <RotateCcw className="w-4 h-4" /> Cycles
             </TabsTrigger>
+            <TabsTrigger
+              value="memes"
+              className="rounded-lg gap-2 data-[state=active]:bg-slate-900 data-[state=active]:text-white px-4 py-2.5"
+            >
+              <Sticker className="w-4 h-4" /> Memes
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="subjects">
@@ -65,6 +71,9 @@ export default function Admin() {
           </TabsContent>
           <TabsContent value="cycles">
             <CycleManager />
+          </TabsContent>
+          <TabsContent value="memes">
+            <MemeManager />
           </TabsContent>
         </Tabs>
       </div>
