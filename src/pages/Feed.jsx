@@ -196,20 +196,6 @@ export default function Feed() {
     );
   }
 
-  // Record user info on first load (IP, geo, etc.)
-  useEffect(() => {
-    if (userProfile) {
-      base44.functions.invoke("recordUserInfo", { username: userProfile.username }).catch(() => {});
-    }
-  }, [userProfile?.username]);
-
-  // Listen for change username event from layout settings
-  useEffect(() => {
-    const handler = () => setShowChangeUsername(true);
-    window.addEventListener("open-change-username", handler);
-    return () => window.removeEventListener("open-change-username", handler);
-  }, []);
-
   if (!userProfile) {
     return <UsernameGate onComplete={setUserProfile} />;
   }
