@@ -1,19 +1,38 @@
-import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Shield, PenSquare, Trophy, BarChart2, Settings, Trash2, X, LogOut } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
 
+const TAB_ORDER = ["Feed", "Leaderboard", "Milestones", "Admin"];
+
+function getSlideDirection(from, to) {
+  const fi = TAB_ORDER.indexOf(from);
+  const ti = TAB_ORDER.indexOf(to);
+  if (fi === -1 || ti === -1) return 0;
+  return ti > fi ? 1 : -1;
+}
+
 export default function Layout({ children, currentPageName }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [direction, setDirection] = useState(0);
+  const prevPage = useRef(currentPageName);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     base44.auth.me().then((u) => { if (u?.role === "admin") setIsAdmin(true); }).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (prevPage.current !== currentPageName) {
+      setDirection(getSlideDirection(prevPage.current, currentPageName));
+      prevPage.current = currentPageName;
+    }
+  }, [currentPageName]);
 
   const tabs = [
     { name: "Feed", icon: PenSquare, label: "Feed" },
@@ -21,6 +40,20 @@ export default function Layout({ children, currentPageName }) {
     { name: "Milestones", icon: Trophy, label: "Milestones" },
     ...(isAdmin ? [{ name: "Admin", icon: Shield, label: "Admin" }] : []),
   ];
+
+  const handleTabPress = (name) => {
+    if (name === currentPageName) {
+      // Scroll to top on re-tap
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      document.querySelector("[data-scroll-container]")?.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const variants = {
+    enter: (dir) => ({ x: dir === 0 ? 0 : `${dir * 30}%`, opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (dir) => ({ x: dir === 0 ? 0 : `${dir * -20}%`, opacity: 0 }),
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
@@ -58,14 +91,27 @@ export default function Layout({ children, currentPageName }) {
         </div>
       </nav>
 
-      {/* Page content */}
+      {/* Page content with slide transition */}
       <div
         style={{
           paddingTop: "calc(56px + env(safe-area-inset-top))",
           paddingBottom: "calc(64px + env(safe-area-inset-bottom))",
+          overflow: "hidden",
         }}
       >
-        {children}
+        <AnimatePresence mode="wait" custom={direction} initial={false}>
+          <motion.div
+            key={currentPageName}
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ type: "tween", ease: [0.25, 0.46, 0.45, 0.94], duration: 0.28 }}
+          >
+            {children}
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       {/* Bottom tab bar */}
@@ -80,14 +126,22 @@ export default function Layout({ children, currentPageName }) {
               <Link
                 key={name}
                 to={createPageUrl(name)}
-                className={`flex flex-col items-center justify-center gap-0.5 py-2 px-4 flex-1 transition-colors ${
+                onClick={() => handleTabPress(name)}
+                className={`flex flex-col items-center justify-center gap-0.5 py-2 px-4 flex-1 transition-colors relative ${
                   active
                     ? "text-violet-600 dark:text-violet-400"
                     : "text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                 }`}
               >
+                {active && (
+                  <motion.div
+                    layoutId="tab-indicator"
+                    className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-violet-600 dark:bg-violet-400 rounded-full"
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                )}
                 <Icon className={`w-5 h-5 ${active ? "stroke-[2.5]" : "stroke-2"}`} />
-                <span className={`text-[10px] font-semibold ${active ? "" : ""}`}>{label}</span>
+                <span className="text-[10px] font-semibold">{label}</span>
               </Link>
             );
           })}
@@ -123,7 +177,6 @@ export default function Layout({ children, currentPageName }) {
                     <X className="w-5 h-5" />
                   </button>
                 </div>
-
                 <div className="space-y-2">
                   <button
                     onClick={() => { base44.auth.logout(); }}
