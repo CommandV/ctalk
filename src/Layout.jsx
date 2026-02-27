@@ -123,27 +123,14 @@ export default function Layout({ children, currentPageName }) {
         </div>
       </nav>
 
-      {/* Page content with slide transition */}
+      {/* Page content */}
       <div
         style={{
           paddingTop: "calc(112px + env(safe-area-inset-top))",
           paddingBottom: "env(safe-area-inset-bottom)",
-          overflow: "hidden",
         }}
       >
-        <AnimatePresence mode="wait" custom={direction} initial={false}>
-          <motion.div
-            key={currentPageName}
-            custom={direction}
-            variants={variants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ type: "tween", ease: [0.25, 0.46, 0.45, 0.94], duration: 0.28 }}
-          >
-            {children}
-          </motion.div>
-        </AnimatePresence>
+        {children}
       </div>
 
       {/* Settings Sheet */}
