@@ -217,6 +217,7 @@ export default function Feed() {
             userProfile={userProfile}
             activeSubject={activeSubject}
             onPostCreated={handlePostCreated}
+            uniqueCardCount={uniqueCollectedCount}
           />
         </div>
       )}
