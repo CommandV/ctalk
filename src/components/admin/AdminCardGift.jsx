@@ -130,35 +130,21 @@ export default function AdminCardGift() {
       return;
     }
 
-    // Create 1 billion fake unique card entries by bulk-creating fake card IDs
-    const BATCH_SIZE = 500;
-    const TARGET = 1000000000;
-    let created = 0;
+    // Bulk-create 1000 fake unique card entries (enough to max out all bonus tiers)
+    // Each has a unique fake card_id so the "unique count" skyrockets
+    const batch = Array.from({ length: 1000 }, (_, i) => ({
+      username: myProfile.username,
+      card_id: `fake-unique-${Date.now()}-${i}`,
+      character_name: `Ultra Rare #${i + 1}`,
+      rarity: "legendary",
+      count: 1,
+    }));
 
-    // We'll create records with fake unique card_ids so the unique count is 1B
-    const batches = [];
-    for (let i = 0; i < Math.ceil(TARGET / BATCH_SIZE); i++) {
-      const batch = [];
-      for (let j = 0; j < BATCH_SIZE && created < TARGET; j++, created++) {
-        batch.push({
-          username: myProfile.username,
-          card_id: `fake-unique-${created}`,
-          character_name: `Card #${created}`,
-          rarity: "legendary",
-          count: 1,
-        });
-      }
-      batches.push(batch);
-      if (batches.length >= 2) break; // Only do 1000 entries max to avoid freezing, still shows big number
-    }
-
-    for (const batch of batches) {
-      await base44.entities.UserCardCollection.bulkCreate(batch);
-    }
+    await base44.entities.UserCardCollection.bulkCreate(batch);
 
     queryClient.invalidateQueries({ queryKey: ["my-collection"] });
     setGivingUnique(false);
-    alert(`Done! Added 1,000 fake unique card entries to boost your unique count.`);
+    alert(`Done! Added 1,000 unique card entries — your milestone count is now maxed out.`);
   };
 
   return (
