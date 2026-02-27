@@ -59,6 +59,14 @@ export default function IncomingTrades({ username, onUltraReveal }) {
     await base44.entities.CardTrade.update(trade.id, { status: "accepted" });
     queryClient.invalidateQueries({ queryKey: ["incoming-trades"] });
     queryClient.invalidateQueries({ queryKey: ["my-collection"] });
+
+    // Trigger ultra animation for Mrs Zellner
+    if (trade.character_name === "Mrs Zellner" && onUltraReveal) {
+      const card = allCards.find((c) => c.id === trade.card_id) || {
+        character_name: "Mrs Zellner", rarity: "legendary",
+      };
+      onUltraReveal(card);
+    }
   };
 
   const handleDecline = async (trade) => {
