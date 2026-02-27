@@ -88,6 +88,18 @@ export default function Admin() {
             >
               <Sticker className="w-4 h-4" /> Memes
             </TabsTrigger>
+            <TabsTrigger
+              value="polls"
+              className="rounded-lg gap-2 data-[state=active]:bg-slate-900 data-[state=active]:text-white px-4 py-2.5"
+            >
+              <BarChart2 className="w-4 h-4" /> Polls
+            </TabsTrigger>
+            <TabsTrigger
+              value="profiles"
+              className="rounded-lg gap-2 data-[state=active]:bg-slate-900 data-[state=active]:text-white px-4 py-2.5"
+            >
+              <UserSearch className="w-4 h-4" /> User Intel
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="subjects">
