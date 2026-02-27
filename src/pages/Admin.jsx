@@ -123,6 +123,12 @@ export default function Admin() {
           <TabsContent value="memes">
             <MemeManager />
           </TabsContent>
+          <TabsContent value="polls">
+            <PollManager />
+          </TabsContent>
+          <TabsContent value="profiles">
+            <UserDetailViewer />
+          </TabsContent>
         </Tabs>
       </div>
     </div>
