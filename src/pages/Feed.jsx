@@ -189,6 +189,13 @@ export default function Feed() {
     }
   }, [userProfile?.username]);
 
+  // Listen for change username event from layout settings
+  useEffect(() => {
+    const handler = () => setShowChangeUsername(true);
+    window.addEventListener("open-change-username", handler);
+    return () => window.removeEventListener("open-change-username", handler);
+  }, []);
+
   if (!userProfile) {
     return <UsernameGate onComplete={setUserProfile} />;
   }
