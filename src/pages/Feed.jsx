@@ -23,12 +23,21 @@ export default function Feed() {
 
   useEffect(() => {
     const checkProfile = async () => {
-      const user = await base44.auth.me();
-      const profiles = await base44.entities.UserProfile.filter({ created_by: user.email });
-      if (profiles.length > 0) {
-        setUserProfile(profiles[0]);
+      try {
+        const user = await base44.auth.me();
+        if (!user) {
+          setCheckingProfile(false);
+          return;
+        }
+        const profiles = await base44.entities.UserProfile.filter({ created_by: user.email });
+        if (profiles.length > 0) {
+          setUserProfile(profiles[0]);
+        }
+      } catch (e) {
+        // not logged in or error - proceed to username gate
+      } finally {
+        setCheckingProfile(false);
       }
-      setCheckingProfile(false);
     };
     checkProfile();
   }, []);
