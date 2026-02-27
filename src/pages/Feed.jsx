@@ -26,6 +26,7 @@ export default function Feed() {
   const [showGiftModal, setShowGiftModal] = useState(false);
   const [showPackOpener, setShowPackOpener] = useState(false);
   const queryClient = useQueryClient();
+  const bottomRef = useRef(null);
 
   useEffect(() => {
     const checkProfile = async () => {
