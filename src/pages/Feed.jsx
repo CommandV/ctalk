@@ -12,6 +12,7 @@ import IncomingTrades from "../components/IncomingTrades";
 import CardPackOpener from "../components/CardPackOpener";
 import { Loader2, Trophy, Gift, Package } from "lucide-react";
 import OnlineCounter from "../components/OnlineCounter";
+import PullToRefresh from "../components/PullToRefresh";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { getBonusesForCount } from "../components/bonuses";
