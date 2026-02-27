@@ -172,7 +172,7 @@ export default function AdminCardGift() {
             disabled={givingUnique}
           >
             {givingUnique ? <Loader2 className="w-3 h-3 animate-spin" /> : <Gift className="w-3 h-3" />}
-            Give Me All Unique
+            Max Unique Count
           </Button>
         </div>
       </div>
