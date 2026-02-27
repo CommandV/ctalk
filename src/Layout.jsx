@@ -67,11 +67,12 @@ export default function Layout({ children, currentPageName }) {
         * { box-sizing: border-box; }
       `}</style>
 
-      {/* Top header */}
+      {/* Top header + tab bar */}
       <nav
         className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800 shadow-sm"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
+        {/* Brand row */}
         <div className="max-w-2xl mx-auto px-4 flex items-center justify-between h-14">
           <Link
             to={createPageUrl("Feed")}
@@ -89,13 +90,44 @@ export default function Layout({ children, currentPageName }) {
             <Settings className="w-5 h-5" />
           </button>
         </div>
+
+        {/* Tab bar row */}
+        <div className="border-t border-gray-200 dark:border-gray-800">
+          <div className="flex items-stretch justify-around max-w-2xl mx-auto">
+            {tabs.map(({ name, icon: Icon, label }) => {
+              const active = currentPageName === name;
+              return (
+                <Link
+                  key={name}
+                  to={createPageUrl(name)}
+                  onClick={() => handleTabPress(name)}
+                  className={`flex flex-col items-center justify-center gap-0.5 py-2 px-4 flex-1 transition-colors relative ${
+                    active
+                      ? "text-violet-600 dark:text-violet-400"
+                      : "text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                  }`}
+                >
+                  {active && (
+                    <motion.div
+                      layoutId="tab-indicator"
+                      className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-violet-600 dark:bg-violet-400 rounded-full"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                  <Icon className={`w-5 h-5 ${active ? "stroke-[2.5]" : "stroke-2"}`} />
+                  <span className="text-[10px] font-semibold">{label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
       </nav>
 
       {/* Page content with slide transition */}
       <div
         style={{
-          paddingTop: "calc(56px + env(safe-area-inset-top))",
-          paddingBottom: "calc(64px + env(safe-area-inset-bottom))",
+          paddingTop: "calc(112px + env(safe-area-inset-top))",
+          paddingBottom: "env(safe-area-inset-bottom)",
           overflow: "hidden",
         }}
       >
@@ -113,40 +145,6 @@ export default function Layout({ children, currentPageName }) {
           </motion.div>
         </AnimatePresence>
       </div>
-
-      {/* Bottom tab bar */}
-      <nav
-        className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-t border-gray-200 dark:border-gray-800"
-        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
-      >
-        <div className="flex items-stretch justify-around max-w-2xl mx-auto">
-          {tabs.map(({ name, icon: Icon, label }) => {
-            const active = currentPageName === name;
-            return (
-              <Link
-                key={name}
-                to={createPageUrl(name)}
-                onClick={() => handleTabPress(name)}
-                className={`flex flex-col items-center justify-center gap-0.5 py-2 px-4 flex-1 transition-colors relative ${
-                  active
-                    ? "text-violet-600 dark:text-violet-400"
-                    : "text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
-                }`}
-              >
-                {active && (
-                  <motion.div
-                    layoutId="tab-indicator"
-                    className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-violet-600 dark:bg-violet-400 rounded-full"
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  />
-                )}
-                <Icon className={`w-5 h-5 ${active ? "stroke-[2.5]" : "stroke-2"}`} />
-                <span className="text-[10px] font-semibold">{label}</span>
-              </Link>
-            );
-          })}
-        </div>
-      </nav>
 
       {/* Settings Sheet */}
       <AnimatePresence>
