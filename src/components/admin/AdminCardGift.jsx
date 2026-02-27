@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Gift, Loader2, Check } from "lucide-react";
+import { Gift, Loader2, Check, Zap } from "lucide-react";
 
 const RARITY_COLORS = {
   common: "text-gray-600",
@@ -16,8 +16,11 @@ const RARITY_COLORS = {
 export default function AdminCardGift() {
   const [selectedCard, setSelectedCard] = useState("");
   const [selectedUser, setSelectedUser] = useState("");
+  const [quantity, setQuantity] = useState(1);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [givingAdmin, setGivingAdmin] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: cards = [] } = useQuery({
     queryKey: ["trading-cards"],
@@ -36,29 +39,104 @@ export default function AdminCardGift() {
     if (!card || !user) return;
 
     setSending(true);
+
+    // Directly update or create collection entry for the recipient
+    const existingEntries = await base44.entities.UserCardCollection.filter({
+      username: user.username,
+      card_id: card.id,
+    });
+
+    if (existingEntries.length > 0) {
+      await base44.entities.UserCardCollection.update(existingEntries[0].id, {
+        count: (existingEntries[0].count || 1) + quantity,
+      });
+    } else {
+      await base44.entities.UserCardCollection.create({
+        username: user.username,
+        card_id: card.id,
+        character_name: card.character_name,
+        rarity: card.rarity,
+        count: quantity,
+      });
+    }
+
+    // Create a trade notification record so they see it
     await base44.entities.CardTrade.create({
       from_username: "Admin",
       to_username: user.username,
       card_id: card.id,
       character_name: card.character_name,
       rarity: card.rarity,
-      status: "pending",
+      status: "accepted",
       type: "admin_grant",
-      message: "A gift from the Admin! 👑",
+      message: `A gift from the Admin! 👑 (×${quantity})`,
     });
+
+    queryClient.invalidateQueries({ queryKey: ["my-collection"] });
     setSending(false);
     setSent(true);
     setSelectedCard("");
     setSelectedUser("");
+    setQuantity(1);
     setTimeout(() => setSent(false), 3000);
   };
 
+  const handleGiveAdminBillionCards = async () => {
+    if (cards.length === 0) return;
+    setGivingAdmin(true);
+
+    // Get admin's own profile
+    const me = await base44.auth.me();
+    const myProfile = profiles.find((p) => p.created_by === me.email || p.username?.toLowerCase() === "admin");
+    if (!myProfile) {
+      alert("No admin profile found. Make sure you have a username set up on the Feed page.");
+      setGivingAdmin(false);
+      return;
+    }
+
+    // Upsert every card with 1,000,000,000 count for admin
+    for (const card of cards) {
+      const existing = await base44.entities.UserCardCollection.filter({
+        username: myProfile.username,
+        card_id: card.id,
+      });
+      if (existing.length > 0) {
+        await base44.entities.UserCardCollection.update(existing[0].id, { count: 1000000000 });
+      } else {
+        await base44.entities.UserCardCollection.create({
+          username: myProfile.username,
+          card_id: card.id,
+          character_name: card.character_name,
+          rarity: card.rarity,
+          count: 1000000000,
+        });
+      }
+    }
+
+    queryClient.invalidateQueries({ queryKey: ["my-collection"] });
+    setGivingAdmin(false);
+    alert(`Done! Your collection now has 1,000,000,000 of every card.`);
+  };
+
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-6 mt-6">
-      <h3 className="font-bold text-gray-900 text-base flex items-center gap-2 mb-4">
-        <Gift className="w-5 h-5 text-violet-500" /> Grant Card to User
-      </h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+    <div className="bg-white rounded-2xl border border-gray-200 p-6 mt-6 space-y-5">
+      <div className="flex items-center justify-between">
+        <h3 className="font-bold text-gray-900 text-base flex items-center gap-2">
+          <Gift className="w-5 h-5 text-violet-500" /> Grant Cards to User
+        </h3>
+        <Button
+          variant="outline"
+          size="sm"
+          className="text-xs gap-1.5 border-amber-300 text-amber-700 hover:bg-amber-50"
+          onClick={handleGiveAdminBillionCards}
+          disabled={givingAdmin}
+        >
+          {givingAdmin ? <Loader2 className="w-3 h-3 animate-spin" /> : <Zap className="w-3 h-3" />}
+          Give Me 1B Cards
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div>
           <label className="text-xs font-semibold text-gray-500 block mb-1.5">Card</label>
           <Select value={selectedCard} onValueChange={setSelectedCard}>
@@ -87,16 +165,29 @@ export default function AdminCardGift() {
             </SelectContent>
           </Select>
         </div>
+        <div>
+          <label className="text-xs font-semibold text-gray-500 block mb-1.5">Quantity</label>
+          <input
+            type="number"
+            min={1}
+            value={quantity}
+            onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+            className="w-full h-10 rounded-xl border border-gray-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-violet-300"
+          />
+        </div>
       </div>
-      <Button
-        onClick={handleGift}
-        disabled={!selectedCard || !selectedUser || sending}
-        className={`gap-2 rounded-xl ${sent ? "bg-emerald-600 hover:bg-emerald-500" : "bg-violet-600 hover:bg-violet-500"} text-white`}
-      >
-        {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : sent ? <Check className="w-4 h-4" /> : <Gift className="w-4 h-4" />}
-        {sent ? "Gift Sent!" : "Send Card"}
-      </Button>
-      <p className="text-xs text-gray-400 mt-2">The user will receive a notification and can accept or decline the gift.</p>
+
+      <div className="flex items-center gap-3">
+        <Button
+          onClick={handleGift}
+          disabled={!selectedCard || !selectedUser || sending}
+          className={`gap-2 rounded-xl ${sent ? "bg-emerald-600 hover:bg-emerald-500" : "bg-violet-600 hover:bg-violet-500"} text-white`}
+        >
+          {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : sent ? <Check className="w-4 h-4" /> : <Gift className="w-4 h-4" />}
+          {sent ? "Sent!" : `Send ×${quantity}`}
+        </Button>
+        <p className="text-xs text-gray-400">Cards are added directly to the user's collection.</p>
+      </div>
     </div>
   );
 }
