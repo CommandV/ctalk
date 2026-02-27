@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 import { format } from "date-fns";
 import PostReactions from "./PostReactions";
 
-export default function PostCard({ post, index = 0, currentUsername, isLegend = false }) {
+export default function PostCard({ post, index = 0, isLast = false, currentUsername, isLegend = false }) {
   const initial = post.username ? post.username[0].toUpperCase() : "?";
-  // Only animate newly added posts (last item = newest in chat order)
-  const shouldAnimate = index === 0;
+  // Only animate the newest (last) post
+  const shouldAnimate = isLast;
 
   return (
     <motion.div
