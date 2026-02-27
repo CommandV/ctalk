@@ -119,6 +119,40 @@ export default function AdminCardGift() {
     alert(`Done! Your collection now has 1,000,000,000 of every card.`);
   };
 
+  const handleGiveUniqueCards = async () => {
+    if (cards.length === 0) return;
+    setGivingUnique(true);
+
+    const me = await base44.auth.me();
+    const myProfile = profiles.find((p) => p.created_by === me.email);
+    if (!myProfile) {
+      alert("No admin profile found.");
+      setGivingUnique(false);
+      return;
+    }
+
+    // Give 1 of every card (unique collection)
+    for (const card of cards) {
+      const existing = await base44.entities.UserCardCollection.filter({
+        username: myProfile.username,
+        card_id: card.id,
+      });
+      if (existing.length === 0) {
+        await base44.entities.UserCardCollection.create({
+          username: myProfile.username,
+          card_id: card.id,
+          character_name: card.character_name,
+          rarity: card.rarity,
+          count: 1,
+        });
+      }
+    }
+
+    queryClient.invalidateQueries({ queryKey: ["my-collection"] });
+    setGivingUnique(false);
+    alert(`Done! You now have 1 of every unique card (${cards.length} cards).`);
+  };
+
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-6 mt-6 space-y-5">
       <div className="flex items-center justify-between">
