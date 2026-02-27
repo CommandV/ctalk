@@ -25,8 +25,13 @@ export default function Layout({ children, currentPageName }) {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       <style>{`
-        body { overscroll-behavior: none; }
-        button, a, [role="tab"] { user-select: none; -webkit-user-select: none; }
+        body { overscroll-behavior: none; -webkit-overflow-scrolling: touch; }
+        button, a, [role="tab"], [role="button"], svg { 
+          user-select: none; 
+          -webkit-user-select: none; 
+          -webkit-tap-highlight-color: transparent;
+        }
+        * { box-sizing: border-box; }
       `}</style>
 
       {/* Top header */}
