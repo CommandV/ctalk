@@ -38,6 +38,17 @@ export default function Feed() {
     queryFn: () => base44.entities.TradingCard.list(),
   });
 
+  const { data: activeCycles = [] } = useQuery({
+    queryKey: ["active-cycle"],
+    queryFn: () => base44.entities.Cycle.filter({ is_active: true }),
+  });
+  const activeCycle = activeCycles[0] || null;
+
+  // Use cycle's card pool if set, otherwise all cards
+  const dropPool = activeCycle?.card_ids?.length > 0
+    ? cards.filter((c) => activeCycle.card_ids.includes(c.id))
+    : cards;
+
   const { data: subjects = [] } = useQuery({
     queryKey: ["subjects"],
     queryFn: () => base44.entities.Subject.filter({ is_active: true }),
@@ -84,12 +95,12 @@ export default function Feed() {
 
   const handlePostCreated = async () => {
     queryClient.invalidateQueries({ queryKey: ["posts"] });
-    if (cards.length > 0 && userProfile) {
+    if (dropPool.length > 0 && userProfile) {
       const next = postsSinceLastCard + 1;
       const threshold = Math.floor(Math.random() * 3) + 4;
       if (next >= threshold) {
         const weights = { common: 40, uncommon: 25, rare: 20, epic: 10, legendary: 5 };
-        const pool = cards.flatMap((c) => Array(weights[c.rarity] || 10).fill(c));
+        const pool = dropPool.flatMap((c) => Array(weights[c.rarity] || 10).fill(c));
         const picked = pool[Math.floor(Math.random() * pool.length)];
         setRevealCard(picked);
         setPostsSinceLastCard(0);
