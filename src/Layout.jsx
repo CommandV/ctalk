@@ -21,6 +21,17 @@ export default function Layout({ children, currentPageName }) {
           </Link>
           <div className="flex items-center gap-2">
             <Link
+              to={createPageUrl("Leaderboard")}
+              className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors ${
+                currentPageName === "Leaderboard"
+                  ? "bg-amber-100 border-amber-300 text-amber-800"
+                  : "border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700"
+              }`}
+            >
+              <BarChart2 className="w-3.5 h-3.5" />
+              Ranks
+            </Link>
+            <Link
               to={createPageUrl("Milestones")}
               className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors ${
                 currentPageName === "Milestones"
