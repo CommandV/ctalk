@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { MessageSquare, Users, Zap, CreditCard, RotateCcw, Sticker, Loader2, ShieldOff } from "lucide-react";
+import { MessageSquare, Users, Zap, CreditCard, RotateCcw, Sticker, Loader2, ShieldOff, BarChart2, UserSearch } from "lucide-react";
 import SubjectManager from "../components/admin/SubjectManager";
 import PostManager from "../components/admin/PostManager";
 import UserManager from "../components/admin/UserManager";
@@ -10,6 +10,8 @@ import MemeManager from "../components/admin/MemeManager";
 import AdminCardGift from "../components/admin/AdminCardGift";
 import AdminTakeCards from "../components/admin/AdminTakeCards";
 import AdminPackGrant from "../components/admin/AdminPackGrant";
+import PollManager from "../components/admin/PollManager";
+import UserDetailViewer from "../components/admin/UserDetailViewer";
 import { base44 } from "@/api/base44Client";
 
 export default function Admin() {
