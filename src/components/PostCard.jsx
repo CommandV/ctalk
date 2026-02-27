@@ -5,12 +5,14 @@ import PostReactions from "./PostReactions";
 
 export default function PostCard({ post, index = 0, currentUsername, isLegend = false }) {
   const initial = post.username ? post.username[0].toUpperCase() : "?";
+  // Only animate the last few (newest) posts, not the entire history
+  const shouldAnimate = index >= 0 && index < 3;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: index * 0.04 }}
+      initial={shouldAnimate ? { opacity: 0, y: 8 } : false}
+      animate={shouldAnimate ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.2 }}
       className={`bg-white rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow duration-200 border-2 ${isLegend ? "border-yellow-400 shadow-yellow-200/50" : "border-gray-100"}`}
     >
       <div className="flex items-start gap-3.5">
