@@ -47,6 +47,9 @@ export default function UserManager() {
                 <div>
                   <span className="font-medium text-slate-900 text-sm">@{profile.username}</span>
                   <p className="text-slate-400 text-xs">
+                    {profile.created_by || "unknown email"}
+                  </p>
+                  <p className="text-slate-300 text-[10px]">
                     Joined {profile.created_date && format(new Date(profile.created_date), "MMM d, yyyy")}
                   </p>
                 </div>
