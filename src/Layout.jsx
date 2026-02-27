@@ -47,17 +47,19 @@ export default function Layout({ children, currentPageName }) {
               <Trophy className="w-3.5 h-3.5" />
               Milestones
             </Link>
-            <Link
-              to={createPageUrl("Admin")}
-              className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors ${
-                currentPageName === "Admin"
-                  ? "bg-gray-100 border-gray-300 text-gray-800"
-                  : "border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700"
-              }`}
-            >
-              <Shield className="w-3.5 h-3.5" />
-              Admin
-            </Link>
+            {isAdmin && (
+              <Link
+                to={createPageUrl("Admin")}
+                className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors ${
+                  currentPageName === "Admin"
+                    ? "bg-gray-100 border-gray-300 text-gray-800"
+                    : "border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                }`}
+              >
+                <Shield className="w-3.5 h-3.5" />
+                Admin
+              </Link>
+            )}
           </div>
         </div>
       </nav>
