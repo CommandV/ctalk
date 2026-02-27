@@ -237,6 +237,15 @@ export default function Feed() {
           <OnlineCounter username={userProfile?.username} />
         </div>
         <SubjectHeader subject={activeSubject} postCount={enrichedPosts.length} />
+
+        {/* Active polls */}
+        {activePolls.length > 0 && (
+          <div className="space-y-3 mb-3">
+            {activePolls.map((poll) => (
+              <PollCard key={poll.id} poll={poll} username={userProfile.username} />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Scrollable posts — oldest at top, newest at bottom */}
