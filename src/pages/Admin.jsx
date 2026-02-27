@@ -1,14 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { MessageSquare, Users, Zap, CreditCard, RotateCcw, Sticker } from "lucide-react";
+import { MessageSquare, Users, Zap, CreditCard, RotateCcw, Sticker, Loader2, ShieldOff } from "lucide-react";
 import SubjectManager from "../components/admin/SubjectManager";
 import PostManager from "../components/admin/PostManager";
 import UserManager from "../components/admin/UserManager";
 import CardManager from "../components/admin/CardManager";
 import CycleManager from "../components/admin/CycleManager";
 import MemeManager from "../components/admin/MemeManager";
+import { base44 } from "@/api/base44Client";
 
 export default function Admin() {
+  const [authState, setAuthState] = useState("loading"); // loading | admin | denied
+
+  useEffect(() => {
+    base44.auth.me().then((user) => {
+      if (user?.role === "admin") setAuthState("admin");
+      else setAuthState("denied");
+    }).catch(() => setAuthState("denied"));
+  }, []);
+
+  if (authState === "loading") {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-slate-400 animate-spin" />
+      </div>
+    );
+  }
+
+  if (authState === "denied") {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center gap-4">
+        <ShieldOff className="w-14 h-14 text-red-400" />
+        <p className="text-xl font-bold text-slate-700">Access Denied</p>
+        <p className="text-slate-500 text-sm">You don't have permission to view this page.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="max-w-4xl mx-auto px-4 py-8 md:py-12">
