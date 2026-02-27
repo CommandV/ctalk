@@ -83,12 +83,28 @@ export default function Layout({ children, currentPageName }) {
             </div>
             <span className="text-base">Thoughts</span>
           </Link>
-          <button
-            onClick={() => setShowSettings(true)}
-            className="p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-          >
-            <Settings className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                const cloakedWindow = window.open("about:blank", "_blank");
+                if (cloakedWindow) {
+                  cloakedWindow.document.title = "Google";
+                  const faviconHtml = `<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='20' fill='%234285F4'>G</text></svg>">`;
+                  cloakedWindow.document.head.innerHTML = faviconHtml;
+                }
+              }}
+              className="p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              title="Open cloaked tab"
+            >
+              <Eye className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setShowSettings(true)}
+              className="p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              <Settings className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Tab bar row */}
