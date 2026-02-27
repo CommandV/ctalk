@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Shield, PenSquare, Trophy } from "lucide-react";
+import { Shield, PenSquare, Trophy, BarChart2 } from "lucide-react";
 
 export default function Layout({ children, currentPageName }) {
   const isAdmin = currentPageName === "Admin";
