@@ -5,8 +5,8 @@ import PostReactions from "./PostReactions";
 
 export default function PostCard({ post, index = 0, currentUsername, isLegend = false }) {
   const initial = post.username ? post.username[0].toUpperCase() : "?";
-  // Only animate the last few (newest) posts, not the entire history
-  const shouldAnimate = index >= 0 && index < 3;
+  // Only animate newly added posts (last item = newest in chat order)
+  const shouldAnimate = index === 0;
 
   return (
     <motion.div
