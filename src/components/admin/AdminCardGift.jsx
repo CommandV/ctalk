@@ -20,6 +20,7 @@ export default function AdminCardGift() {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [givingAdmin, setGivingAdmin] = useState(false);
+  const [givingUnique, setGivingUnique] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: cards = [] } = useQuery({
