@@ -60,12 +60,17 @@ export default function IncomingTrades({ username, onUltraReveal, onReveal }) {
     queryClient.invalidateQueries({ queryKey: ["incoming-trades"] });
     queryClient.invalidateQueries({ queryKey: ["my-collection"] });
 
-    // Trigger ultra animation for Mrs Zellner
+    // Trigger reveal animation
+    const card = allCards.find((c) => c.id === trade.card_id) || {
+      character_name: trade.character_name,
+      rarity: trade.rarity,
+      id: trade.card_id,
+    };
+
     if (trade.character_name === "Mrs Zellner" && onUltraReveal) {
-      const card = allCards.find((c) => c.id === trade.card_id) || {
-        character_name: "Mrs Zellner", rarity: "legendary",
-      };
       onUltraReveal(card);
+    } else if (onReveal) {
+      onReveal(card);
     }
   };
 
