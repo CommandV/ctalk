@@ -213,6 +213,7 @@ export default function Feed() {
       </div>
 
       {revealCard && <CardReveal card={revealCard} onClose={() => setRevealCard(null)} />}
+      {ultraRevealCard && <CardRevealUltra card={ultraRevealCard} onClose={() => setUltraRevealCard(null)} />}
       {showGiftModal && <GiftCardModal userProfile={userProfile} onClose={() => setShowGiftModal(false)} />}
 
       {activeSubject && (
