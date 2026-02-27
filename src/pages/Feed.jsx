@@ -174,6 +174,9 @@ export default function Feed() {
 
         <IncomingTrades username={userProfile.username} />
 
+        <div className="flex items-center justify-between mb-1">
+          <OnlineCounter username={userProfile?.username} />
+        </div>
         <SubjectHeader subject={activeSubject} postCount={enrichedPosts.length} />
 
         {activeSubject && (
