@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { MessageSquare, Users, Zap, CreditCard, RotateCcw } from "lucide-react";
+import { MessageSquare, Users, Zap, CreditCard, RotateCcw, Sticker } from "lucide-react";
 import SubjectManager from "../components/admin/SubjectManager";
 import PostManager from "../components/admin/PostManager";
 import UserManager from "../components/admin/UserManager";
 import CardManager from "../components/admin/CardManager";
 import CycleManager from "../components/admin/CycleManager";
+import MemeManager from "../components/admin/MemeManager";
 
 export default function Admin() {
   return (

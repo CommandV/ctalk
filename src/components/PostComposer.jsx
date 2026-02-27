@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ImagePlus, Send, X, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import MemePicker from "./MemePicker";
+import { canPostMemes } from "./bonuses";
 
 export default function PostComposer({ userProfile, activeSubject, onPostCreated }) {
   const [content, setContent] = useState("");
