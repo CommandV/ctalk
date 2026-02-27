@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Gift, Send, Loader2, ChevronDown } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { X, Gift, Send, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import MobileDrawerSelect from "./MobileDrawerSelect";
 
 const RARITY_COLORS = {
   common: "bg-gray-100 text-gray-700",
