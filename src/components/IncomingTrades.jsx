@@ -13,7 +13,7 @@ const RARITY_COLORS = {
   legendary: "bg-yellow-100 text-yellow-700",
 };
 
-export default function IncomingTrades({ username, onUltraReveal }) {
+export default function IncomingTrades({ username, onUltraReveal, onReveal }) {
   const queryClient = useQueryClient();
 
   const { data: trades = [], isLoading } = useQuery({
