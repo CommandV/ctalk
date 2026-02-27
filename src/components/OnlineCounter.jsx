@@ -13,18 +13,22 @@ export default function OnlineCounter({ username }) {
     if (!username) return;
 
     const sendHeartbeat = async () => {
-      const existing = await base44.entities.UserPresence.filter({ username });
-      if (existing.length > 0) {
-        await base44.entities.UserPresence.update(existing[0].id, {
-          last_seen: new Date().toISOString(),
-        });
-      } else {
-        await base44.entities.UserPresence.create({
-          username,
-          last_seen: new Date().toISOString(),
-        });
+      try {
+        const existing = await base44.entities.UserPresence.filter({ username });
+        if (existing.length > 0) {
+          await base44.entities.UserPresence.update(existing[0].id, {
+            last_seen: new Date().toISOString(),
+          });
+        } else {
+          await base44.entities.UserPresence.create({
+            username,
+            last_seen: new Date().toISOString(),
+          });
+        }
+        queryClient.invalidateQueries({ queryKey: ["online-count"] });
+      } catch (e) {
+        // ignore transient network errors
       }
-      queryClient.invalidateQueries({ queryKey: ["online-count"] });
     };
 
     sendHeartbeat();
