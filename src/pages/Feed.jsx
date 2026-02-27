@@ -248,6 +248,7 @@ export default function Feed() {
                     key={post.id}
                     post={post}
                     index={i}
+                    isLast={i === sortedPosts.length - 1}
                     currentUsername={userProfile.username}
                   />
                 ))}
