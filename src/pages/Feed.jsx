@@ -54,11 +54,13 @@ export default function Feed() {
   const { data: cards = [] } = useQuery({
     queryKey: ["trading-cards"],
     queryFn: () => base44.entities.TradingCard.list(),
+    staleTime: 60000,
   });
 
   const { data: activeCycles = [] } = useQuery({
     queryKey: ["active-cycle"],
     queryFn: () => base44.entities.Cycle.filter({ is_active: true }),
+    staleTime: 60000,
   });
   const activeCycle = activeCycles[0] || null;
 
