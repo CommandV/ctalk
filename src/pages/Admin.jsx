@@ -7,6 +7,9 @@ import UserManager from "../components/admin/UserManager";
 import CardManager from "../components/admin/CardManager";
 import CycleManager from "../components/admin/CycleManager";
 import MemeManager from "../components/admin/MemeManager";
+import AdminCardGift from "../components/admin/AdminCardGift";
+import AdminTakeCards from "../components/admin/AdminTakeCards";
+import AdminPackGrant from "../components/admin/AdminPackGrant";
 import { base44 } from "@/api/base44Client";
 
 export default function Admin() {
@@ -96,6 +99,9 @@ export default function Admin() {
           </TabsContent>
           <TabsContent value="cards">
             <CardManager />
+            <AdminCardGift />
+            <AdminPackGrant />
+            <AdminTakeCards />
           </TabsContent>
           <TabsContent value="cycles">
             <CycleManager />
