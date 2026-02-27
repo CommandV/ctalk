@@ -136,6 +136,16 @@ export default function Feed() {
           });
         }
         queryClient.invalidateQueries({ queryKey: ["my-collection"] });
+
+        // Every 5th post also awards a standard card pack
+        if (next % 5 === 0) {
+          await base44.entities.CardPack.create({
+            username: userProfile.username,
+            pack_type: "standard",
+            opened: false,
+          });
+          queryClient.invalidateQueries({ queryKey: ["card-packs"] });
+        }
       } else {
         setPostsSinceLastCard(next);
       }
