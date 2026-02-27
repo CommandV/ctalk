@@ -29,13 +29,16 @@ export default function PostComposer({ userProfile, activeSubject, onPostCreated
   };
 
   const handleSubmit = async () => {
-    if (!content.trim() && !imageFile) return;
+    if (!content.trim() && !imageFile && !imagePreview) return;
     setPosting(true);
 
     let image_url = null;
     if (imageFile) {
       const res = await base44.integrations.Core.UploadFile({ file: imageFile });
       image_url = res.file_url;
+    } else if (imagePreview && !imageFile) {
+      // Meme picked from library — imagePreview is already a URL
+      image_url = imagePreview;
     }
 
     await base44.entities.Post.create({
