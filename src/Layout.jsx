@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Shield, PenSquare, Trophy, BarChart2, Settings, Trash2, X, LogOut } from "lucide-react";
+import { Shield, PenSquare, Trophy, BarChart2, Settings, Trash2, X, LogOut, AtSign } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
 
