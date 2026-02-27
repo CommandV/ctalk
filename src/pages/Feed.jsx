@@ -181,12 +181,17 @@ export default function Feed() {
     ]);
   };
 
+  // Sorted oldest-first for chat layout
+  const sortedPosts = [...enrichedPosts].reverse();
+
   return (
     <PullToRefresh onRefresh={handleRefresh}>
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pb-4">
-      <div className="max-w-2xl mx-auto px-4 py-6">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
+
+      {/* Sticky top content */}
+      <div className="max-w-2xl w-full mx-auto px-4 pt-4">
         {/* Milestones banner */}
-        <div className="flex gap-2 mb-5">
+        <div className="flex gap-2 mb-3">
           <Link to={createPageUrl("Milestones")} className="flex-1 flex items-center justify-between bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-2xl px-4 py-3 shadow hover:opacity-95 transition-opacity">
             <div className="flex items-center gap-2.5">
               <Trophy className="w-5 h-5 text-yellow-300" />
@@ -219,43 +224,41 @@ export default function Feed() {
           <OnlineCounter username={userProfile?.username} />
         </div>
         <SubjectHeader subject={activeSubject} postCount={enrichedPosts.length} />
+      </div>
 
+      {/* Scrollable posts — oldest at top, newest at bottom */}
+      <div className="flex-1 max-w-2xl w-full mx-auto px-4 pb-2">
         {activeSubject && (
           <>
             {postsLoading ? (
               <div className="flex justify-center py-12">
                 <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />
               </div>
-            ) : enrichedPosts.length === 0 ? (
+            ) : sortedPosts.length === 0 ? (
               <div className="text-center py-16">
                 <p className="text-gray-400 text-base">Be the first to share your thoughts ✍️</p>
               </div>
             ) : (
               <div className="space-y-3">
-                {enrichedPosts.map((post, i) => {
-                  const authorCollection = allProfiles.find((p) => p.username === post.username);
-                  return (
-                    <PostCard
-                      key={post.id}
-                      post={post}
-                      index={i}
-                      currentUsername={userProfile.username}
-                    />
-                  );
-                })}
+                {sortedPosts.map((post, i) => (
+                  <PostCard
+                    key={post.id}
+                    post={post}
+                    index={i}
+                    currentUsername={userProfile.username}
+                  />
+                ))}
+                {/* Anchor for auto-scroll to bottom */}
+                <div ref={bottomRef} />
               </div>
             )}
           </>
         )}
       </div>
 
-      {revealCard && <CardReveal card={revealCard} onClose={() => setRevealCard(null)} />}
-      {ultraRevealCard && <CardRevealUltra card={ultraRevealCard} onClose={() => setUltraRevealCard(null)} />}
-      {showGiftModal && <GiftCardModal userProfile={userProfile} onClose={() => setShowGiftModal(false)} />}
-      {showPackOpener && <CardPackOpener username={userProfile.username} onClose={() => setShowPackOpener(false)} />}
-
+      {/* Composer pinned above tab bar */}
       {activeSubject && (
-        <div className="fixed bottom-0 left-0 right-0 z-40" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+        <div className="sticky bottom-0 left-0 right-0 z-40 max-w-2xl mx-auto w-full">
           <PostComposer
             userProfile={userProfile}
             activeSubject={activeSubject}
@@ -264,6 +267,11 @@ export default function Feed() {
           />
         </div>
       )}
+
+      {revealCard && <CardReveal card={revealCard} onClose={() => setRevealCard(null)} />}
+      {ultraRevealCard && <CardRevealUltra card={ultraRevealCard} onClose={() => setUltraRevealCard(null)} />}
+      {showGiftModal && <GiftCardModal userProfile={userProfile} onClose={() => setShowGiftModal(false)} />}
+      {showPackOpener && <CardPackOpener username={userProfile.username} onClose={() => setShowPackOpener(false)} />}
     </div>
     </PullToRefresh>
   );
