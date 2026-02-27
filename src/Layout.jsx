@@ -25,9 +25,27 @@ export default function Layout({ children, currentPageName }) {
   const prevPage = useRef(currentPageName);
   const location = useLocation();
   const navigate = useNavigate();
+  const originalTitle = useRef(document.title);
 
   useEffect(() => {
     base44.auth.me().then((u) => { if (u?.role === "admin") setIsAdmin(true); }).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        originalTitle.current = document.title;
+        document.title = CLOAKED_TITLE;
+        const favicon = document.querySelector("link[rel='icon']");
+        if (favicon) favicon.href = CLOAKED_FAVICON;
+      } else {
+        document.title = originalTitle.current;
+        const favicon = document.querySelector("link[rel='icon']");
+        if (favicon) favicon.href = "/favicon.ico";
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, []);
 
   useEffect(() => {
