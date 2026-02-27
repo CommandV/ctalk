@@ -90,6 +90,7 @@ export default function Feed() {
   const { data: allProfiles = [] } = useQuery({
     queryKey: ["profiles"],
     queryFn: () => base44.entities.UserProfile.list("-created_date", 500),
+    staleTime: 60000,
   });
 
   const profileMap = useMemo(() => {
