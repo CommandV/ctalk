@@ -266,11 +266,7 @@ export default function Feed() {
       <div className="flex-1 max-w-2xl w-full mx-auto px-4 pb-2">
         {activeSubject && (
           <>
-            {postsLoading ? (
-              <div className="flex justify-center py-12">
-                <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />
-              </div>
-            ) : sortedPosts.length === 0 ? (
+            {sortedPosts.length === 0 && !postsLoading ? (
               <div className="text-center py-16">
                 <p className="text-gray-400 text-base">Be the first to share your thoughts ✍️</p>
               </div>
@@ -285,6 +281,11 @@ export default function Feed() {
                     currentUsername={userProfile.username}
                   />
                 ))}
+                {postsLoading && (
+                  <div className="flex justify-center py-12">
+                    <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />
+                  </div>
+                )}
                 {/* Anchor for auto-scroll to bottom */}
                 <div ref={bottomRef} />
               </div>
