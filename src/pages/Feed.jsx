@@ -73,6 +73,12 @@ export default function Feed() {
     ? cards.filter((c) => activeCycle.card_ids.includes(c.id))
     : cards;
 
+  const { data: activePolls = [] } = useQuery({
+    queryKey: ["polls"],
+    queryFn: () => base44.entities.Poll.filter({ is_active: true }, "-created_date", 10),
+    staleTime: 30000,
+  });
+
   const { data: subjects = [] } = useQuery({
     queryKey: ["subjects"],
     queryFn: () => base44.entities.Subject.filter({ is_active: true }),
