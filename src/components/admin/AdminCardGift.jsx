@@ -159,16 +159,28 @@ export default function AdminCardGift() {
         <h3 className="font-bold text-gray-900 text-base flex items-center gap-2">
           <Gift className="w-5 h-5 text-violet-500" /> Grant Cards to User
         </h3>
-        <Button
-          variant="outline"
-          size="sm"
-          className="text-xs gap-1.5 border-amber-300 text-amber-700 hover:bg-amber-50"
-          onClick={handleGiveAdminBillionCards}
-          disabled={givingAdmin}
-        >
-          {givingAdmin ? <Loader2 className="w-3 h-3 animate-spin" /> : <Zap className="w-3 h-3" />}
-          Give Me 1B Cards
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-xs gap-1.5 border-amber-300 text-amber-700 hover:bg-amber-50"
+            onClick={handleGiveAdminBillionCards}
+            disabled={givingAdmin}
+          >
+            {givingAdmin ? <Loader2 className="w-3 h-3 animate-spin" /> : <Zap className="w-3 h-3" />}
+            Give Me 1B Cards
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-xs gap-1.5 border-violet-300 text-violet-700 hover:bg-violet-50"
+            onClick={handleGiveUniqueCards}
+            disabled={givingUnique}
+          >
+            {givingUnique ? <Loader2 className="w-3 h-3 animate-spin" /> : <Gift className="w-3 h-3" />}
+            Give Me All Unique
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
