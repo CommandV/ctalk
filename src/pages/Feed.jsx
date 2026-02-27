@@ -89,32 +89,31 @@ export default function Feed() {
     queryFn: () => base44.entities.UserProfile.list("-created_date", 500),
   });
 
-  const profileMap = {};
-  allProfiles.forEach((p) => {
-    profileMap[p.username] = p;
-  });
+  const profileMap = useMemo(() => {
+    const map = {};
+    allProfiles.forEach((p) => { map[p.username] = p; });
+    return map;
+  }, [allProfiles]);
 
-  const enrichedPosts = posts.map((p) => ({
+  const enrichedPosts = useMemo(() => posts.map((p) => ({
     ...p,
     avatar_color: profileMap[p.username]?.avatar_color || "#6366F1",
-  }));
+  })), [posts, profileMap]);
 
   const { data: myCollection = [] } = useQuery({
     queryKey: ["my-collection", userProfile?.username],
     queryFn: () => base44.entities.UserCardCollection.filter({ username: userProfile.username }),
     enabled: !!userProfile,
+    staleTime: 30000,
   });
 
-  const uniqueCollectedCount = new Set(myCollection.map((c) => c.card_id)).size;
-  const currentTier = getBonusesForCount(uniqueCollectedCount);
-
-  // Legend status = master collector (7 unique cards)
-  const legendUsernames = new Set();
+  const uniqueCollectedCount = useMemo(() => new Set(myCollection.map((c) => c.card_id)).size, [myCollection]);
+  const currentTier = useMemo(() => getBonusesForCount(uniqueCollectedCount), [uniqueCollectedCount]);
 
   // Scroll to bottom when posts load or new post arrives
   useEffect(() => {
     if (enrichedPosts.length > 0) {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      bottomRef.current?.scrollIntoView({ behavior: "instant" });
     }
   }, [enrichedPosts.length]);
 
