@@ -208,8 +208,8 @@ export default function Feed() {
     ]);
   };
 
-  // Sorted oldest-first for chat layout
-  const sortedPosts = useMemo(() => [...enrichedPosts].reverse(), [enrichedPosts]);
+  // Newest posts first (displayed bottom to top for chat layout)
+  const sortedPosts = useMemo(() => enrichedPosts, [enrichedPosts]);
 
   return (
     <PullToRefresh onRefresh={handleRefresh}>
