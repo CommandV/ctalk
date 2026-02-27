@@ -111,6 +111,13 @@ export default function Feed() {
   // Legend status = master collector (7 unique cards)
   const legendUsernames = new Set();
 
+  // Scroll to bottom when posts load or new post arrives
+  useEffect(() => {
+    if (enrichedPosts.length > 0) {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [enrichedPosts.length]);
+
   const handlePostCreated = async () => {
     queryClient.invalidateQueries({ queryKey: ["posts"] });
     // Filter out the special Mrs Zellner card — it can ONLY be gifted by admin
