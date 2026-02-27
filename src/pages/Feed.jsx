@@ -6,6 +6,7 @@ import PostComposer from "../components/PostComposer";
 import PostCard from "../components/PostCard";
 import SubjectHeader from "../components/SubjectHeader";
 import CardReveal from "../components/CardReveal";
+import CardRevealUltra from "../components/CardRevealUltra";
 import GiftCardModal from "../components/GiftCardModal";
 import IncomingTrades from "../components/IncomingTrades";
 import { Loader2, Trophy, Gift } from "lucide-react";
