@@ -28,6 +28,7 @@ export default function Feed() {
   const [postsSinceLastCard, setPostsSinceLastCard] = useState(0);
   const [showGiftModal, setShowGiftModal] = useState(false);
   const [showPackOpener, setShowPackOpener] = useState(false);
+  const [showChangeUsername, setShowChangeUsername] = useState(false);
   const queryClient = useQueryClient();
   const bottomRef = useRef(null);
 
