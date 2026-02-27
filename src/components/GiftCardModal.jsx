@@ -129,16 +129,16 @@ export default function GiftCardModal({ userProfile, onClose }) {
 
                   <div>
                     <label className="text-xs font-bold text-gray-600 uppercase tracking-wide block mb-2">Send to</label>
-                    <select
-                      value={toUsername}
-                      onChange={(e) => setToUsername(e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
-                    >
-                      <option value="">Select a user...</option>
-                      {otherUsers.map((u) => (
-                        <option key={u.id} value={u.username}>@{u.username}</option>
-                      ))}
-                    </select>
+                    <Select value={toUsername} onValueChange={setToUsername}>
+                      <SelectTrigger className="rounded-xl h-10 border-gray-200">
+                        <SelectValue placeholder="Select a user..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {otherUsers.map((u) => (
+                          <SelectItem key={u.id} value={u.username}>@{u.username}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   <div>
