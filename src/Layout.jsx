@@ -22,7 +22,6 @@ export default function Layout({ children, currentPageName }) {
   const prevPage = useRef(currentPageName);
   const location = useLocation();
   const navigate = useNavigate();
-  const originalTitle = useRef(document.title);
 
   useEffect(() => {
     base44.auth.me().then((u) => { if (u?.role === "admin") setIsAdmin(true); }).catch(() => {});
