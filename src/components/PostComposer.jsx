@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ImagePlus, Send, X, Loader2 } from "lucide-react";
@@ -11,8 +12,8 @@ export default function PostComposer({ userProfile, activeSubject, onPostCreated
   const [content, setContent] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [posting, setPosting] = useState(false);
   const fileRef = useRef();
+  const queryClient = useQueryClient();
   const memeAllowed = canPostMemes(uniqueCardCount);
 
   const handleImageSelect = (e) => {
@@ -28,35 +29,64 @@ export default function PostComposer({ userProfile, activeSubject, onPostCreated
     if (fileRef.current) fileRef.current.value = "";
   };
 
-  const handleSubmit = async () => {
+  const postMutation = useMutation({
+    mutationFn: async () => {
+      let image_url = null;
+      if (imageFile) {
+        const res = await base44.integrations.Core.UploadFile({ file: imageFile });
+        image_url = res.file_url;
+      } else if (imagePreview && !imageFile) {
+        image_url = imagePreview;
+      }
+      return base44.entities.Post.create({
+        content: content.trim(),
+        image_url,
+        username: userProfile.username,
+        subject_id: activeSubject.id,
+        subject_title: activeSubject.title,
+      });
+    },
+    onMutate: async () => {
+      // Optimistic: add a fake post immediately
+      await queryClient.cancelQueries({ queryKey: ["posts", activeSubject.id] });
+      const previous = queryClient.getQueryData(["posts", activeSubject.id]);
+
+      const optimisticPost = {
+        id: "__optimistic__" + Date.now(),
+        content: content.trim(),
+        image_url: imagePreview || null,
+        username: userProfile.username,
+        subject_id: activeSubject.id,
+        subject_title: activeSubject.title,
+        created_date: new Date().toISOString(),
+        avatar_color: userProfile.avatar_color,
+        __optimistic: true,
+      };
+
+      queryClient.setQueryData(["posts", activeSubject.id], (old = []) => [optimisticPost, ...old]);
+
+      // Clear composer immediately
+      setContent("");
+      removeImage();
+
+      return { previous };
+    },
+    onError: (_err, _vars, context) => {
+      queryClient.setQueryData(["posts", activeSubject.id], context.previous);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts", activeSubject.id] });
+      onPostCreated();
+    },
+  });
+
+  const handleSubmit = () => {
     if (!content.trim() && !imageFile && !imagePreview) return;
-    setPosting(true);
-
-    let image_url = null;
-    if (imageFile) {
-      const res = await base44.integrations.Core.UploadFile({ file: imageFile });
-      image_url = res.file_url;
-    } else if (imagePreview && !imageFile) {
-      // Meme picked from library — imagePreview is already a URL
-      image_url = imagePreview;
-    }
-
-    await base44.entities.Post.create({
-      content: content.trim(),
-      image_url,
-      username: userProfile.username,
-      subject_id: activeSubject.id,
-      subject_title: activeSubject.title,
-    });
-
-    setContent("");
-    removeImage();
-    setPosting(false);
-    onPostCreated();
+    postMutation.mutate();
   };
 
   return (
-    <div className="bg-white border-t border-gray-200 px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+    <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
       <div className="max-w-2xl mx-auto">
         <AnimatePresence>
           {imagePreview && (
@@ -87,12 +117,12 @@ export default function PostComposer({ userProfile, activeSubject, onPostCreated
             {userProfile.username[0].toUpperCase()}
           </div>
 
-          <div className="flex-1 flex items-end gap-2 bg-gray-100 rounded-2xl px-4 py-2.5">
+          <div className="flex-1 flex items-end gap-2 bg-gray-100 dark:bg-gray-800 rounded-2xl px-4 py-2.5">
             <Textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Share your thoughts..."
-              className="bg-transparent border-0 text-gray-800 placeholder:text-gray-400 resize-none text-sm p-0 focus-visible:ring-0 min-h-[24px] max-h-32 leading-relaxed"
+              className="bg-transparent border-0 text-gray-800 dark:text-gray-100 placeholder:text-gray-400 resize-none text-sm p-0 focus-visible:ring-0 min-h-[24px] max-h-32 leading-relaxed"
               rows={1}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
@@ -123,10 +153,10 @@ export default function PostComposer({ userProfile, activeSubject, onPostCreated
 
           <Button
             onClick={handleSubmit}
-            disabled={posting || (!content.trim() && !imageFile)}
+            disabled={postMutation.isPending || (!content.trim() && !imageFile && !imagePreview)}
             className="bg-violet-600 hover:bg-violet-500 text-white rounded-full w-10 h-10 p-0 shrink-0 flex items-center justify-center"
           >
-            {posting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+            {postMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
           </Button>
         </div>
       </div>

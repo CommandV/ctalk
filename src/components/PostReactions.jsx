@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ThumbsUp, ThumbsDown, Flame, Zap } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Flame, Zap } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function PostReactions({ post, currentUsername }) {
   const queryClient = useQueryClient();
@@ -19,38 +19,72 @@ export default function PostReactions({ post, currentUsername }) {
   const myReaction = reactions.find((r) => r.reactor_username === currentUsername);
   const isOwnPost = post.username === currentUsername;
 
-  const handleReact = async (type) => {
-    if (isOwnPost || !currentUsername) return;
-    setAnimating(type);
-    setTimeout(() => setAnimating(null), 600);
-
-    if (myReaction) {
-      if (myReaction.reaction_type === type) {
-        await base44.entities.PostReaction.delete(myReaction.id);
+  const mutation = useMutation({
+    mutationFn: async (type) => {
+      if (myReaction) {
+        if (myReaction.reaction_type === type) {
+          await base44.entities.PostReaction.delete(myReaction.id);
+        } else {
+          await base44.entities.PostReaction.update(myReaction.id, { reaction_type: type });
+        }
       } else {
-        await base44.entities.PostReaction.update(myReaction.id, { reaction_type: type });
+        await base44.entities.PostReaction.create({
+          post_id: post.id,
+          post_author: post.username,
+          reactor_username: currentUsername,
+          reaction_type: type,
+        });
       }
-    } else {
-      await base44.entities.PostReaction.create({
-        post_id: post.id,
-        post_author: post.username,
-        reactor_username: currentUsername,
-        reaction_type: type,
+    },
+    onMutate: async (type) => {
+      setAnimating(type);
+      setTimeout(() => setAnimating(null), 600);
+
+      await queryClient.cancelQueries({ queryKey: ["reactions", post.id] });
+      const previous = queryClient.getQueryData(["reactions", post.id]);
+
+      queryClient.setQueryData(["reactions", post.id], (old = []) => {
+        const withoutMine = old.filter((r) => r.reactor_username !== currentUsername);
+        if (myReaction?.reaction_type === type) {
+          // toggle off
+          return withoutMine;
+        }
+        // add or switch
+        return [
+          ...withoutMine,
+          {
+            id: "__optimistic__",
+            post_id: post.id,
+            post_author: post.username,
+            reactor_username: currentUsername,
+            reaction_type: type,
+          },
+        ];
       });
-    }
-    queryClient.invalidateQueries({ queryKey: ["reactions", post.id] });
+
+      return { previous };
+    },
+    onError: (_err, _type, context) => {
+      queryClient.setQueryData(["reactions", post.id], context.previous);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["reactions", post.id] });
+    },
+  });
+
+  const handleReact = (type) => {
+    if (isOwnPost || !currentUsername) return;
+    mutation.mutate(type);
   };
 
   const score = boosts - burns;
 
   return (
-    <div className="flex items-center gap-3 mt-3 pt-2.5 border-t border-gray-100">
-      {/* Score */}
+    <div className="flex items-center gap-3 mt-3 pt-2.5 border-t border-gray-100 dark:border-gray-800">
       <span className={`text-sm font-bold tabular-nums min-w-[2rem] ${score > 0 ? "text-emerald-600" : score < 0 ? "text-rose-500" : "text-gray-400"}`}>
         {score > 0 ? `+${score}` : score}
       </span>
 
-      {/* Boost */}
       <button
         onClick={() => handleReact("boost")}
         disabled={isOwnPost}
@@ -66,7 +100,6 @@ export default function PostReactions({ post, currentUsername }) {
         Boost {boosts > 0 && <span className="font-bold">{boosts}</span>}
       </button>
 
-      {/* Burn */}
       <button
         onClick={() => handleReact("burn")}
         disabled={isOwnPost}
