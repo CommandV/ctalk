@@ -117,3 +117,8 @@ export function getReactionMultiplier(uniqueCount) {
   if (uniqueCount >= 3) return 1.5;
   return 1;
 }
+
+// Master (18) and Legend (25) tiers unlock meme posting
+export function canPostMemes(uniqueCount) {
+  return uniqueCount >= 18;
+}
